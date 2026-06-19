@@ -2,8 +2,9 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
-import { auth } from "./auth/auth.ts";
+import { auth } from "./modules/auth/auth.ts";
 import { env } from "./config/env.ts";
+// import { passwordResetLimiter } from "./middleware/rate-limit.middleware.ts";
 
 const app = express();
 
@@ -19,8 +20,9 @@ app.use(
 );
 
 // ──── BETTERAUTH HANDLER ────────────────────────────────────────────────────────────────────────────
-// Bridges a web-standard request handler to Node.js http.IncomingMessage and http.ServerResponse objects.
+// app.use("api/auth/forget-password", passwordResetLimiter);
 
+// Bridges a web-standard request handler to Node.js http.IncomingMessage and http.ServerResponse objects.
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 // ──── BODY PARSING ────────────────────────────────────────────────────────────────────────────

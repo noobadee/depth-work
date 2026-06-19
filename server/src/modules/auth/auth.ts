@@ -1,12 +1,13 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db/index.ts";
-import * as schema from "../db/schema/index.ts";
+import { db } from "../../db/index.ts";
+import * as schema from "../../db/schema/index.ts";
 import { randomUUID } from "crypto";
 import nodemailer from "nodemailer";
-import { env } from "../config/env.ts";
+import { env } from "../../config/env.ts";
 
 // ──── EMAIL TRANSPORTER ────────────────────────────────────────────────────────────────────────────
+
 const transporter = nodemailer.createTransport({
   host: env.SMTP_HOST,
   port: Number(env.SMTP_PORT),
@@ -18,17 +19,20 @@ const transporter = nodemailer.createTransport({
 });
 
 // ──── BETTERAUTH ────────────────────────────────────────────────────────────────────────────
+
 export const auth = betterAuth({
   // ──── Identity ────────────────────────────────────────────────────────────────────────────
+
   appName: "DepthWork",
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
 
   // ──── Database adapter ────────────────────────────────────────────────────────────────────────────
+
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
-      user: schema.users,
+      user: schema.user,
       session: schema.session,
       account: schema.account,
       verification: schema.verification,
@@ -36,16 +40,18 @@ export const auth = betterAuth({
   }),
 
   // ──── ID generation ────────────────────────────────────────────────────────────────────────────
+
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // refresh session after 24 hours
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 5, // cache session in cookie for 5
+      maxAge: 60 * 5, // cache session in cookie for 5 minutes
     },
   },
 
   // ──── Cookie config ────────────────────────────────────────────────────────────────────────────
+
   advanced: {
     generateId: () => randomUUID(),
     crossSubdomainCookies: {
@@ -60,6 +66,7 @@ export const auth = betterAuth({
   },
 
   // ──── Email / Password ────────────────────────────────────────────────────────────────────────────
+
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -82,6 +89,7 @@ export const auth = betterAuth({
   },
 
   // ──── Email verification ────────────────────────────────────────────────────────────────────────────
+
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
@@ -102,6 +110,7 @@ export const auth = betterAuth({
   },
 
   // ──── Google OAuth ────────────────────────────────────────────────────────────────────────────
+
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID!,
@@ -111,6 +120,7 @@ export const auth = betterAuth({
   },
 
   // ──── Trusted origins (CORS) ────────────────────────────────────────────────────────────────────────────
+
   trustedOrigins: [env.WEB_URL!],
 });
 

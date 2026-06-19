@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import { auth } from "../auth/auth.ts";
-import type { Session, User } from "../auth/auth.ts";
+import { auth } from "../modules/auth/auth.ts";
+import type { Session, User } from "../modules/auth/auth.ts";
 
 // ──── EXTEND EXPRESS REQUEST TYPE ────────────────────────────────────────────────────────────────────────────
 
