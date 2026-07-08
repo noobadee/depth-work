@@ -5,10 +5,9 @@ import {
   uuid,
   unique,
   timestamp,
-  check,
+  varchar,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
-import { users } from "./auth/users.ts";
+import { user } from "./auth.ts";
 
 export const workspaceTypeEnum = pgEnum("workspace_type", ["personal", "team"]);
 
@@ -16,11 +15,11 @@ export const workspaces = pgTable(
   "workspaces",
   {
     workspace_id: uuid("workspace_id").primaryKey().defaultRandom(),
-    name: text("name").notNull(),
+    name: varchar("name", { length: 100 }).notNull(),
     type: workspaceTypeEnum("type").notNull().default("personal"),
     ownerId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "set null" }),
+      .references(() => user.id, { onDelete: "set null" }),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -30,9 +29,5 @@ export const workspaces = pgTable(
   },
   (table) => [
     unique("uq_workspace_name_per_owner").on(table.name, table.ownerId),
-    check(
-      "chk_workspace_name_length",
-      sql`length(${table.name}) BETWEEN 1 AND 100`,
-    ),
   ],
 );

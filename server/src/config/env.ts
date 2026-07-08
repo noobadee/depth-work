@@ -1,5 +1,8 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import { z } from "zod";
+
+dotenv.config({ path: ".env" });
+dotenv.config({ path: ".env.local", override: true });
 
 const envSchema = z.object({
   PORT: z.coerce
@@ -42,7 +45,10 @@ const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
   console.error("❌ Invalid environment variables");
-  console.error(parsed.error.flatten().fieldErrors);
+  parsed.error.issues.forEach((issue) => {
+    console.error(`${issue.path.join(".")}: ${issue.message}`);
+  });
+  // console.error(parsed.error.flatten().fieldErrors);
   process.exit(1);
 }
 

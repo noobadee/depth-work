@@ -2,12 +2,13 @@ import {
   pgTable,
   pgEnum,
   text,
+  varchar,
   uuid,
   timestamp,
   date,
   check,
 } from "drizzle-orm/pg-core";
-import { users } from "./auth/users.ts";
+import { user } from "./auth.ts";
 import { workspaces } from "./workspaces.ts";
 import { sql } from "drizzle-orm";
 
@@ -27,8 +28,8 @@ export const projects = pgTable(
       .references(() => workspaces.workspace_id, { onDelete: "cascade" }),
     createdBy: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "set null" }),
-    title: text("title").notNull(),
+      .references(() => user.id, { onDelete: "set null" }),
+    title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     status: projectStatusEnum("status").notNull().default("pending"),
     start_date: date("start_date", { mode: "date" }),
@@ -41,10 +42,6 @@ export const projects = pgTable(
       .defaultNow(),
   },
   (table) => [
-    check(
-      "chk_project_title_length",
-      sql`length(${table.title}) BETWEEN 1 AND 255`,
-    ),
     check(
       "chk_project_dates",
       sql`${table.start_date} IS NULL OR ${table.due_date} IS NULL OR ${table.due_date} >= ${table.start_date}`,

@@ -1,4 +1,3 @@
-import "dotenv/config";
 import postgres from "postgres";
 import { env } from "../config/env.ts";
 

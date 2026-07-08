@@ -2,12 +2,13 @@ import {
   pgTable,
   pgEnum,
   text,
+  varchar,
   uuid,
   timestamp,
   integer,
   check,
 } from "drizzle-orm/pg-core";
-import { users } from "./auth/users.ts";
+import { user } from "./auth.ts";
 import { sql } from "drizzle-orm";
 
 export const focusStatusEnum = pgEnum("focus_status", [
@@ -22,8 +23,8 @@ export const focus_sessions = pgTable(
     focus_id: uuid("focus_id").primaryKey().defaultRandom(),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    title: text("title")
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: varchar("title", { length: 255 })
       .notNull()
       .default(sql`to_char(now(), 'Mon DD, YYYY HH12:MI AM')`),
     status: focusStatusEnum("status").notNull().default("active"),

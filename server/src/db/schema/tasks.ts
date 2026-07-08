@@ -3,13 +3,14 @@ import {
   pgEnum,
   integer,
   text,
+  varchar,
   uuid,
   date,
   timestamp,
   check,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { users } from "./auth/users.ts";
+import { user } from "./auth.ts";
 import { workspaces } from "./workspaces.ts";
 import { projects } from "./projects.ts";
 
@@ -34,13 +35,13 @@ export const tasks = pgTable(
     projectId: uuid("project_id").references(() => projects.project_id, {
       onDelete: "set null",
     }),
-    createdBy: text("created_by").references(() => users.id, {
+    createdBy: text("created_by").references(() => user.id, {
       onDelete: "set null",
     }),
-    assignedTo: text("assigned_to").references(() => users.id, {
+    assignedTo: text("assigned_to").references(() => user.id, {
       onDelete: "set null",
     }),
-    title: text("title").notNull(),
+    title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     priority: taskPriorityEnum("priority").notNull().default("medium"),
     status: taskStatusEnum("status").notNull().default("pending"),
@@ -55,10 +56,6 @@ export const tasks = pgTable(
       .defaultNow(),
   },
   (table) => [
-    check(
-      "chk_task_title_length",
-      sql`length(${table.title}) BETWEEN 1 AND 255`,
-    ),
     check(
       "chk_task_completed_at",
       sql`(${table.status} = 'completed' AND ${table.completed_at} IS NOT NULL)

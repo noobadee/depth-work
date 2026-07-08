@@ -6,7 +6,7 @@ import {
   timestamp,
   unique,
 } from "drizzle-orm/pg-core";
-import { users } from "./auth/users.ts";
+import { user } from "./auth.ts";
 import { workspaces } from "./workspaces.ts";
 
 export const workspaceRoleEnum = pgEnum("workspace_role", [
@@ -25,7 +25,7 @@ export const workspaceMembers = pgTable(
       .references(() => workspaces.workspace_id, { onDelete: "cascade" }),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     role: workspaceRoleEnum("role").notNull().default("member"),
     joined_at: timestamp("created_at", { withTimezone: true })
       .notNull()
