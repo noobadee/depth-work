@@ -20,3 +20,5 @@ export const focus_session_tasks = pgTable("focus_session_tasks", {
   completed_in_session: boolean("completed_session").notNull().default(false),
   added_at: timestamp("added_at").notNull().defaultNow(),
 });
+
+export type NewFocusSessionTask = typeof focus_session_tasks.$inferInsert;

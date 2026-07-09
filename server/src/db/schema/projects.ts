@@ -48,3 +48,5 @@ export const projects = pgTable(
     ),
   ],
 );
+
+export type NewProject = typeof projects.$inferInsert;

@@ -58,3 +58,5 @@ export const focus_sessions = pgTable(
     ),
   ],
 );
+
+export type NewFocusSession = typeof focus_sessions.$inferInsert;

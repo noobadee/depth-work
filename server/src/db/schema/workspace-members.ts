@@ -35,3 +35,5 @@ export const workspaceMembers = pgTable(
     unique("uq_workspace_member").on(table.workspaceId, table.userId),
   ],
 );
+
+export type NewWorkspaceMember = typeof workspaceMembers.$inferInsert;
