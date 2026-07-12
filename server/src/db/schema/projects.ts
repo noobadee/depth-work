@@ -7,6 +7,7 @@ import {
   timestamp,
   date,
   check,
+  integer,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth.ts";
 import { workspaces } from "./workspaces.ts";
@@ -34,6 +35,7 @@ export const projects = pgTable(
     status: projectStatusEnum("status").notNull().default("pending"),
     start_date: date("start_date", { mode: "date" }),
     due_date: date("due_date", { mode: "date" }),
+    position: integer("position").notNull().default(0),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

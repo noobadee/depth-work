@@ -5,13 +5,13 @@
   "main": "./src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx ./src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx ./src/scripts/seed.ts",
-    "db:seed-reset": "tsx ./src/scripts/seed.ts --reset",
+    "db:seed:team": "tsx ./src/seed/index.ts activeTeam",
+    "db:seed:reset": "tsx ./src/seed/index.ts --reset",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -39,6 +39,7 @@
     "@types/nodemailer": "^8.0.1",
     "drizzle-kit": "^0.31.10",
     "prettier": "^3.8.3",
+    "tsc-alias": "^1.9.0",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }

@@ -18,7 +18,9 @@ export const focus_session_tasks = pgTable("focus_session_tasks", {
     .references(() => tasks.task_id, { onDelete: "cascade" }),
   position: integer("position").notNull().default(0),
   completed_in_session: boolean("completed_session").notNull().default(false),
-  added_at: timestamp("added_at").notNull().defaultNow(),
+  added_at: timestamp("added_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export type NewFocusSessionTask = typeof focus_session_tasks.$inferInsert;

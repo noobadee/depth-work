@@ -5,7 +5,9 @@ import {
   uuid,
   timestamp,
   unique,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { user } from "./auth.ts";
 import { workspaces } from "./workspaces.ts";
 
@@ -27,12 +29,15 @@ export const workspaceMembers = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     role: workspaceRoleEnum("role").notNull().default("member"),
-    joined_at: timestamp("created_at", { withTimezone: true })
+    joined_at: timestamp("joined_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
   },
   (table) => [
     unique("uq_workspace_member").on(table.workspaceId, table.userId),
+    uniqueIndex("uq_one_owner_per_workspace")
+      .on(table.workspaceId)
+      .where(sql`${table.role} = 'owner'`),
   ],
 );
 
