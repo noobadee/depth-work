@@ -18,11 +18,13 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@common/*": ["./src/common/*"],
       "@config/*": ["./src/config/*"],
       "@db/*": ["./src/db/*"],
       "@lib/*": ["./src/lib/*"],
       "@middleware/*": ["./src/middleware/*"],
-      "@modules/*": ["./src/modules/*"]
+      "@modules/*": ["./src/modules/*"],
+      "@seed/*": ["./src/seed/*"]
     }
   },
   "include": ["src/**/*", "src/tests"],

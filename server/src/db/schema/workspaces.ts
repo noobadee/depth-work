@@ -33,3 +33,4 @@ export const workspaces = pgTable(
 );
 
 export type NewWorkspace = typeof workspaces.$inferInsert;
+export type Workspace = typeof workspaces.$inferSelect;

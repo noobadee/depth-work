@@ -1,7 +1,7 @@
 import { env } from "@/config/env.ts";
 import { db } from "@/db/index.ts";
-import resetDB from "./utils/reset.ts";
-import seedActiveTeamScenario from "./scenarios/scenario.active-team.ts";
+import resetDB from "@/seed/utils/reset.ts";
+import seedActiveTeamScenario from "@/seed/scenarios/scenario.active-team.ts";
 
 if (env.NODE_ENV === "production") {
   console.error("❌ Seed script is not allowed to run in production");

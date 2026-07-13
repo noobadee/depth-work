@@ -21,7 +21,7 @@ import {
   makeTasks,
   makeFocusSessions,
   makeFocusSessionTasks,
-} from "../factories/index.ts";
+} from "@/seed/factories/index.ts";
 import type { DB } from "@/db/index.ts";
 
 /**
