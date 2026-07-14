@@ -10,6 +10,7 @@ import {
 } from "@/common/middleware/errorHandler.ts";
 import { env } from "@/config/env.ts";
 import { auth } from "@/modules/auth/auth.ts";
+import { workspacesRouter } from "@/modules/workspaces/router.ts";
 // import { passwordResetLimiter } from "./middleware/rate-limit.middleware.ts";
 
 function createApp() {
@@ -21,8 +22,6 @@ function createApp() {
     cors({
       origin: env.WEB_URL,
       credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
     }),
   );
 
@@ -32,7 +31,6 @@ function createApp() {
 
   // ──── BETTERAUTH HANDLER ────────────────────────────────────────────────────────────────────────────
   // app.use("api/auth/forget-password", passwordResetLimiter);
-
   // Bridges a web-standard request handler to Node.js http.IncomingMessage and http.ServerResponse objects.
   app.all("/api/auth/*splat", toNodeHandler(auth));
 
@@ -49,6 +47,10 @@ function createApp() {
       data: { confirmed_at: new Date().toISOString() },
     });
   });
+
+  // ──── FEATURE ROUTES ────────────────────────────────────────────────────────────────────────────
+
+  app.use("/api/workspaces", workspacesRouter);
 
   // ──── GLOBAL ERROR HANDLER ────────────────────────────────────────────────────────────────────────────
 

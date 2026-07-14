@@ -15,16 +15,20 @@ export interface IWorkspaceService {
   getWorkspaces(userId: string): Promise<Workspace[]>;
   getWorkspace(id: string, userId: string): Promise<Workspace>;
   createWorkspace(data: CreateWorkspaceInput): Promise<Workspace>;
-  updateWorkspace(id: string, data: UpdateWorkspaceInput): Promise<Workspace>;
+  updateWorkspace(
+    id: string,
+    userId: string,
+    data: UpdateWorkspaceInput,
+  ): Promise<Workspace>;
   deleteWorkspace(id: string, userId: string): Promise<void>;
 }
 
-interface CreateWorkspaceInput {
+export interface CreateWorkspaceInput {
   name: string;
-  type: "personal" | "team" | undefined;
-  ownerId: string;
+  type?: "personal" | "team";
+  userId: string;
 }
 
-interface UpdateWorkspaceInput {
+export interface UpdateWorkspaceInput {
   name?: string;
 }

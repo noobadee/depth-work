@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db/index.ts";
 import { workspaces } from "@/db/schema/index.ts";
 import type { NewWorkspace, Workspace } from "@/db/schema/index.ts";
-import type { IWorkspaceRepository } from "./types.ts";
+import type { IWorkspaceRepository } from "@/modules/workspaces/types.ts";
 
 export class WorkspaceRepository implements IWorkspaceRepository {
   async findAllByOwner(ownerId: string): Promise<Workspace[]> {

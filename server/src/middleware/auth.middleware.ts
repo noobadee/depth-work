@@ -1,6 +1,8 @@
+import { fromNodeHeaders } from "better-auth/node";
+import { UnauthorizedError } from "@/common/errors/index.ts";
+import { auth } from "@/modules/auth/auth.ts";
+import type { Session, User } from "@/modules/auth/auth.ts";
 import type { Request, Response, NextFunction } from "express";
-import { auth } from "../modules/auth/auth.ts";
-import type { Session, User } from "../modules/auth/auth.ts";
 
 // ──── EXTEND EXPRESS REQUEST TYPE ────────────────────────────────────────────────────────────────────────────
 
@@ -17,16 +19,16 @@ declare global {
 
 export async function requireAuth(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): Promise<void> {
   try {
     const session = await auth.api.getSession({
-      headers: fromExpressHeaders(req),
+      headers: fromNodeHeaders(req.headers),
     });
 
     if (!session) {
-      res.status(401).json({ error: "Unauthorized" });
+      next(new UnauthorizedError());
       return;
     }
 
@@ -35,8 +37,7 @@ export async function requireAuth(
 
     next();
   } catch (err) {
-    console.error("Auth middleware error:", err);
-    res.status(401).json({ error: "Unauthorized" });
+    next(err);
   }
 }
 
@@ -44,12 +45,12 @@ export async function requireAuth(
 
 export async function optionalAuth(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): Promise<void> {
   try {
     const session = await auth.api.getSession({
-      headers: fromExpressHeaders(req),
+      headers: fromNodeHeaders(req.headers),
     });
 
     if (session) {
@@ -61,21 +62,31 @@ export async function optionalAuth(
   next();
 }
 
-// ──── HELPER: Convert Express headers to Web Fetch Headers ────────────────────────────────────────────────────────────────────────────
+// ──── HELPERS ────────────────────────────────────────────────────────────────────────────
 
-function fromExpressHeaders(req: Request): Headers {
-  const headers = new Headers();
-
-  for (const [key, value] of Object.entries(req.headers)) {
-    if (value === undefined) {
-      continue;
-    }
-    if (Array.isArray(value)) {
-      value.forEach((v) => headers.append(key, v));
-    } else {
-      headers.set(key, value);
-    }
+export function requireUser(req: Request): NonNullable<Request["user"]> {
+  if (req.user === undefined) {
+    throw new UnauthorizedError();
   }
 
-  return headers;
+  return req.user;
 }
+
+// Convert Express headers to Web Fetch Headers
+
+// function fromExpressHeaders(req: Request): Headers {
+//   const headers = new Headers();
+
+//   for (const [key, value] of Object.entries(req.headers)) {
+//     if (value === undefined) {
+//       continue;
+//     }
+//     if (Array.isArray(value)) {
+//       value.forEach((v) => headers.append(key, v));
+//     } else {
+//       headers.set(key, value);
+//     }
+//   }
+
+//   return headers;
+// }

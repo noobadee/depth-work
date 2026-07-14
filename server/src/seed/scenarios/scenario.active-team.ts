@@ -1,8 +1,8 @@
 export default seedActiveTeamScenario;
 
+import { eq } from "drizzle-orm";
 import {
   user,
-  account,
   workspaces,
   workspaceMembers,
   projects,
@@ -11,9 +11,8 @@ import {
   focus_sessions,
   focus_session_tasks,
 } from "@/db/schema/index.ts";
+import { auth } from "@/modules/auth/auth.ts";
 import {
-  makeUsers,
-  makeAccounts,
   makeWorkspace,
   makeWorkspaceMembers,
   makeProjects,
@@ -37,36 +36,60 @@ async function seedActiveTeamScenario(db: DB) {
 
   await db.transaction(async (tx) => {
     // Fill users table
-    const [user1, user2, user3, user4] = await tx
-      .insert(user)
-      .values(
-        makeUsers([
-          { name: "Mark Mendez", email: "mark@example.com" },
-          { name: "Leo Brimstone", email: "leo@example.com" },
-          { name: "Vanessa Morgan", email: "vanessa@example.com" },
-          { name: "Laila Mercedez", email: "laila@example.com" },
-        ]),
-      )
-      .returning();
+    const { user: user1 } = await auth.api.signUpEmail({
+      body: {
+        name: "Mark Mendez",
+        email: "mark@example.com",
+        password: "mark1234",
+      },
+    });
+    const { user: user2 } = await auth.api.signUpEmail({
+      body: {
+        name: "Leo Brimstone",
+        email: "leo@example.com",
+        password: "leo12345",
+      },
+    });
+    const { user: user3 } = await auth.api.signUpEmail({
+      body: {
+        name: "Vanessa Morgan",
+        email: "vanessa@example.com",
+        password: "vanessa1",
+      },
+    });
+    const { user: user4 } = await auth.api.signUpEmail({
+      body: {
+        name: "Laila Mercedez",
+        email: "laila@example.com",
+        password: "laila123",
+      },
+    });
     console.log("✅ Users seeded");
 
-    // Fill accounts table
-    await tx.insert(account).values(
-      await makeAccounts([
-        { userId: user1?.id ?? "", password: "mark1234" },
-        { userId: user2?.id ?? "", password: "leo12345" },
-        { userId: user3?.id ?? "", password: "vanessa1" },
-        { userId: user4?.id ?? "", password: "laila123" },
-      ]),
-    );
-    console.log("✅ Accounts table seeded");
+    // Update users table (make verified)
+    await tx
+      .update(user)
+      .set({ emailVerified: true })
+      .where(eq(user.email, user1.email));
+    await tx
+      .update(user)
+      .set({ emailVerified: true })
+      .where(eq(user.email, user2.email));
+    await tx
+      .update(user)
+      .set({ emailVerified: true })
+      .where(eq(user.email, user3.email));
+    await tx
+      .update(user)
+      .set({ emailVerified: true })
+      .where(eq(user.email, user4.email));
 
     // Fill workspaces table
     const [workspace] = await tx
       .insert(workspaces)
       .values(
         makeWorkspace({
-          ownerId: user1?.id ?? "",
+          ownerId: user1.id,
           name: "Bitcoin Research",
           type: "team",
         }),
@@ -81,22 +104,22 @@ async function seedActiveTeamScenario(db: DB) {
         makeWorkspaceMembers([
           {
             workspaceId: workspace?.workspace_id ?? "",
-            userId: user1?.id ?? "",
+            userId: user1.id ?? "",
             role: "owner",
           },
           {
             workspaceId: workspace?.workspace_id ?? "",
-            userId: user2?.id ?? "",
+            userId: user2.id ?? "",
             role: "member",
           },
           {
             workspaceId: workspace?.workspace_id ?? "",
-            userId: user3?.id ?? "",
+            userId: user3.id ?? "",
             role: "member",
           },
           {
             workspaceId: workspace?.workspace_id ?? "",
-            userId: user4?.id ?? "",
+            userId: user4.id ?? "",
             role: "member",
           },
         ]),
@@ -111,7 +134,7 @@ async function seedActiveTeamScenario(db: DB) {
         makeProjects([
           {
             workspaceId: workspace?.workspace_id ?? "",
-            createdBy: user1?.id ?? "",
+            createdBy: user1.id ?? "",
             title: "Gather relevant data",
             description: null,
             status: "in_progress",
@@ -121,7 +144,7 @@ async function seedActiveTeamScenario(db: DB) {
           },
           {
             workspaceId: workspace?.workspace_id ?? "",
-            createdBy: user1?.id ?? "",
+            createdBy: user1.id ?? "",
             title: "Define Functional and Non-functional Requirements",
             description: null,
             status: "in_progress",
@@ -131,7 +154,7 @@ async function seedActiveTeamScenario(db: DB) {
           },
           {
             workspaceId: workspace?.workspace_id ?? "",
-            createdBy: user1?.id ?? "",
+            createdBy: user1.id ?? "",
             title: "Create a low fidelity design",
             description: null,
             status: "in_progress",
@@ -151,19 +174,19 @@ async function seedActiveTeamScenario(db: DB) {
         makeProjectMembers([
           {
             projectId: project1?.project_id ?? "",
-            userId: user2?.id ?? "",
+            userId: user2.id ?? "",
           },
           {
             projectId: project2?.project_id ?? "",
-            userId: user1?.id ?? "",
+            userId: user1.id ?? "",
           },
           {
             projectId: project2?.project_id ?? "",
-            userId: user3?.id ?? "",
+            userId: user3.id ?? "",
           },
           {
             projectId: project3?.project_id ?? "",
-            userId: user4?.id ?? "",
+            userId: user4.id ?? "",
           },
         ]),
       )
@@ -178,8 +201,8 @@ async function seedActiveTeamScenario(db: DB) {
           {
             workspaceId: workspace?.workspace_id ?? "",
             projectId: project1?.project_id ?? "",
-            createdBy: user2?.id ?? "",
-            assignedTo: user2?.id ?? "",
+            createdBy: user2.id ?? "",
+            assignedTo: user2.id ?? "",
             title: "Scrape data from website X",
             description: null,
             priority: "medium",
@@ -191,8 +214,8 @@ async function seedActiveTeamScenario(db: DB) {
           {
             workspaceId: workspace?.workspace_id ?? "",
             projectId: project2?.project_id ?? "",
-            createdBy: user1?.id ?? "",
-            assignedTo: user1?.id ?? "",
+            createdBy: user1.id ?? "",
+            assignedTo: user1.id ?? "",
             title: "Define non-functional requirements",
             description: null,
             priority: "medium",
@@ -204,8 +227,8 @@ async function seedActiveTeamScenario(db: DB) {
           {
             workspaceId: workspace?.workspace_id ?? "",
             projectId: project2?.project_id ?? "",
-            createdBy: user1?.id ?? "",
-            assignedTo: user3?.id ?? "",
+            createdBy: user1.id ?? "",
+            assignedTo: user3.id ?? "",
             title: "Define functional requirements",
             description: null,
             priority: "medium",
@@ -217,8 +240,8 @@ async function seedActiveTeamScenario(db: DB) {
           {
             workspaceId: workspace?.workspace_id ?? "",
             projectId: project3?.project_id ?? "",
-            createdBy: user4?.id ?? "",
-            assignedTo: user4?.id ?? "",
+            createdBy: user4.id ?? "",
+            assignedTo: user4.id ?? "",
             title: "Browse related design",
             description: null,
             priority: "medium",
@@ -230,8 +253,8 @@ async function seedActiveTeamScenario(db: DB) {
           {
             workspaceId: workspace?.workspace_id ?? "",
             projectId: project3?.project_id ?? "",
-            createdBy: user4?.id ?? "",
-            assignedTo: user4?.id ?? "",
+            createdBy: user4.id ?? "",
+            assignedTo: user4.id ?? "",
             title: "Sketch the home page",
             description: null,
             priority: "medium",
@@ -254,14 +277,14 @@ async function seedActiveTeamScenario(db: DB) {
       .values(
         makeFocusSessions([
           {
-            userId: user2?.id ?? "",
+            userId: user2.id ?? "",
             status: "completed",
             started_at: oneHourEarly,
             ended_at: thirtyMinutesEarly,
             duration_seconds: 30 * 60,
           },
           {
-            userId: user2?.id ?? "",
+            userId: user2.id ?? "",
             status: "active",
             started_at: new Date(focusToday),
             ended_at: null,
