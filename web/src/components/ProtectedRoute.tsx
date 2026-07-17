@@ -13,5 +13,5 @@ export default function ProtectedRoute() {
   }
 
   // Authenticated — render child route
-  return <Outlet />
+  return <Outlet />;
 }

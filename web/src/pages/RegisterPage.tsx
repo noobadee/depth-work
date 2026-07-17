@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { signUp } from "../lib/auth.client.ts";
 import type { SubmitEvent } from "react";
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -29,21 +28,22 @@ export default function RegisterPage() {
     }
 
     setVerificationSent(true);
-  }
+  };
 
   if (verificationSent) {
     return (
       <div>
         <h2>Check your email</h2>
         <p>
-          We sent a verification link to <strong>{form.email}</strong>.
-          Click is to activate your account.
+          We sent a verification link to <strong>{form.email}</strong>. Click is
+          to activate your account.
         </p>
         <p>
-          Wrong email? <button onClick={() => setVerificationSent(false)}>Go back</button>
+          Wrong email?{" "}
+          <button onClick={() => setVerificationSent(false)}>Go back</button>
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -96,5 +96,5 @@ export default function RegisterPage() {
         Already have an account? <Link to="/login">Sign in</Link>
       </p>
     </div>
-  )
+  );
 }

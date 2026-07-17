@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { redirect, Link } from "@tanstack/react-router";
 import { signIn } from "../lib/auth.client.ts";
 import type { SubmitEvent } from "react";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -27,8 +26,8 @@ export default function LoginPage() {
       return;
     }
 
-    navigate("/dashboard");
-  }
+    redirect({ to: "/dashboard" });
+  };
 
   // ──── Google OAuth ────────────────────────────────────────────────────────────────────────
   const handleGoogleLogin = async () => {
@@ -77,7 +76,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <Link to="/forgot-password">Forgot password</Link>
+        <Link to="/forget-password">Forgot password</Link>
 
         <button type="submit" disabled={pending}>
           {pending ? "Signing in..." : "Sign in"}
@@ -88,5 +87,5 @@ export default function LoginPage() {
         No account? <Link to="/register">Create one</Link>
       </p>
     </div>
-  )
+  );
 }

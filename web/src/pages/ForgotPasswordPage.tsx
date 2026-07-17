@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { SubmitEvent } from "react";
 import { authClient } from "../lib/auth.client.ts";
+import type { SubmitEvent } from "react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -45,5 +45,5 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
     </div>
-  )
+  );
 }

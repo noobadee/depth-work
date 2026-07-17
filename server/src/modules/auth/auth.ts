@@ -1,10 +1,10 @@
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../../db/index.ts";
-import * as schema from "../../db/schema/index.ts";
 import { randomUUID } from "crypto";
 import nodemailer from "nodemailer";
-import { env } from "../../config/env.ts";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { env } from "@/config/env.ts";
+import { db } from "@/db/index.ts";
+import * as schema from "@/db/schema/index.ts";
 
 // ──── EMAIL TRANSPORTER ────────────────────────────────────────────────────────────────────────────
 
@@ -69,7 +69,7 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: env.NODE_ENV === "test" ? false : true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
 
