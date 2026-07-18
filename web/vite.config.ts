@@ -12,13 +12,8 @@ export default defineConfig({
     generatedRouteTree: "./src/app/routeTree.gen.ts"
   }), react()],
   server: {
-    proxy: {
-      "/api/auth": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+    port: 3001,
+    strictPort: true,
   },
   resolve: {
     alias: {

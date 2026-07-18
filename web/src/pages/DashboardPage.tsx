@@ -1,9 +1,9 @@
 import { redirect } from "@tanstack/react-router";
-import { useSession } from "../hooks/useSession.ts";
-import { signOut } from "../lib/auth.client.ts";
+import { useSession, signOut } from "@/shared/api/auth-client.ts";
 
 export default function DashboardPage() {
-  const { user } = useSession();
+  const data = useSession();
+  const { user } = data;
 
   const handleSignOut = async () => {
     await signOut();

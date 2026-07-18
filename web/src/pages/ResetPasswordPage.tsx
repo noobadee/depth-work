@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { redirect, useSearch } from "@tanstack/react-router";
-import { authClient } from "../lib/auth.client.ts";
+import { authClient } from "@/shared/api/auth-client";
 import type { SubmitEvent } from "react";
 
 export default function ResetPasswordPage() {

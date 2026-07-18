@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { signUp } from "../lib/auth.client.ts";
+import { signUp } from "@/shared/api/auth-client";
 import type { SubmitEvent } from "react";
 
 export default function RegisterPage() {
