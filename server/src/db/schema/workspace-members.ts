@@ -42,3 +42,4 @@ export const workspaceMembers = pgTable(
 );
 
 export type NewWorkspaceMember = typeof workspaceMembers.$inferInsert;
+export type WorkspaceMember = typeof workspaceMembers.$inferSelect;

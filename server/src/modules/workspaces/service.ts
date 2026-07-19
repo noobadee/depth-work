@@ -1,5 +1,10 @@
-import { ForbiddenError, NotFoundError } from "@/common/errors/index.ts";
-import type { Workspace } from "@/db/schema/workspaces.ts";
+import {
+  ConflictError,
+  DatabaseError,
+  ForbiddenError,
+  NotFoundError,
+} from "@/common/errors/index.ts";
+import type { Workspace } from "@/db/schema/index.ts";
 import type {
   CreateWorkspaceInput,
   IWorkspaceRepository,
@@ -13,7 +18,7 @@ export class WorkspaceService implements IWorkspaceService {
   async getWorkspaces(userId: string): Promise<Workspace[]> {
     const workspaces = await this.repo.findAllByOwner(userId);
 
-    if (!workspaces) {
+    if (!workspaces || workspaces.length === 0) {
       throw new NotFoundError("Workspace");
     }
 
@@ -35,15 +40,17 @@ export class WorkspaceService implements IWorkspaceService {
   }
 
   async createWorkspace(data: CreateWorkspaceInput): Promise<Workspace> {
-    const newWorkspace = await this.repo.create({
-      name: data.name,
-      type: data?.type,
-      ownerId: data.userId,
-    });
+    const existing = await this.repo.findByName(data.name);
+
+    if (existing) {
+      throw new ConflictError("Workspace name already exists");
+    }
+
+    const newWorkspace = await this.repo.create(data);
 
     if (!newWorkspace) {
-      throw new Error(
-        "Unexpected error occurred: Unable to create a new workspace",
+      throw new DatabaseError(
+        "Insert succeeded but no row was returned for workspace creation",
       );
     }
 
@@ -55,13 +62,19 @@ export class WorkspaceService implements IWorkspaceService {
     userId: string,
     data: UpdateWorkspaceInput,
   ): Promise<Workspace> {
-    await this.getWorkspace(id, userId);
+    await this.getWorkspace(id, userId); // verify existence and ownership
+
+    const duplicateName = await this.repo.findByName(data.name);
+
+    if (duplicateName) {
+      throw new ConflictError("Workspace name already exists");
+    }
 
     const updatedWorkspace = await this.repo.update(id, data);
 
     if (!updatedWorkspace) {
-      throw new Error(
-        "Unexpected error occurred: Unable to create a new workspace",
+      throw new DatabaseError(
+        "Update succeeded but no row was returned for workspace update",
       );
     }
 
@@ -69,7 +82,7 @@ export class WorkspaceService implements IWorkspaceService {
   }
 
   async deleteWorkspace(id: string, userId: string): Promise<void> {
-    await this.getWorkspace(id, userId);
+    await this.getWorkspace(id, userId); // verify existence and ownership
     await this.repo.delete(id);
   }
 }

@@ -11,6 +11,7 @@ import {
 import { env } from "@/config/env.ts";
 import { auth } from "@/modules/auth/auth.ts";
 import { workspacesRouter } from "@/modules/workspaces/router.ts";
+import { workspaceMembersRouter } from "@/modules/workspace-members/router.ts";
 // import { passwordResetLimiter } from "./middleware/rate-limit.middleware.ts";
 
 function createApp() {
@@ -51,6 +52,7 @@ function createApp() {
   // ──── FEATURE ROUTES ────────────────────────────────────────────────────────────────────────────
 
   app.use("/api/workspaces", workspacesRouter);
+  app.use("/api/workspace-members", workspaceMembersRouter);
 
   // ──── GLOBAL ERROR HANDLER ────────────────────────────────────────────────────────────────────────────
 

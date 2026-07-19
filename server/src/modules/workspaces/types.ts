@@ -1,13 +1,11 @@
 import type { NewWorkspace, Workspace } from "@/db/schema/index.ts";
 
 export interface IWorkspaceRepository {
-  findAllByOwner(ownerId: string): Promise<Workspace[]>;
+  findAllByOwner(ownerId: string): Promise<Workspace[] | null>;
   findById(id: string): Promise<Workspace | null>;
+  findByName(name: string): Promise<Workspace | null>;
   create(data: NewWorkspace): Promise<Workspace | null>;
-  update(
-    id: string,
-    data: Partial<Pick<Workspace, "name">>,
-  ): Promise<Workspace | null>;
+  update(id: string, data: Pick<Workspace, "name">): Promise<Workspace | null>;
   delete(id: string): Promise<void>;
 }
 
@@ -25,10 +23,10 @@ export interface IWorkspaceService {
 
 export interface CreateWorkspaceInput {
   name: string;
-  type?: "personal" | "team";
-  userId: string;
+  type: "personal" | "team";
+  ownerId: string;
 }
 
 export interface UpdateWorkspaceInput {
-  name?: string;
+  name: string;
 }

@@ -1,4 +1,4 @@
-import { AppError } from "./AppError.ts";
+import { AppError } from "@/common/errors/AppError.ts";
 
 export class BadRequestError extends AppError {
   constructor(message = "Bad request", details?: unknown) {
@@ -33,6 +33,12 @@ export class NotFoundError extends AppError {
 export class ConflictError extends AppError {
   constructor(message = "Resource already exists") {
     super(message, 409, "CONFLICT");
+  }
+}
+
+export class DatabaseError extends AppError {
+  constructor(message = "Database operation failed unexpectedly") {
+    super(message, 500, "DATABASE_ERROR", { isOperational: false });
   }
 }
 

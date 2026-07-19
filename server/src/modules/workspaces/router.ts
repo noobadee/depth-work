@@ -19,13 +19,17 @@ const controller = new WorkspaceController(service);
 router.use(requireAuth);
 
 router.get("/", controller.getAll);
+
 router.get("/:id", validate({ params: workspaceIdSchema }), controller.getOne);
+
 router.post("/", validate({ body: createWorkspaceSchema }), controller.create);
+
 router.patch(
-  "/",
+  "/:id",
   validate({ body: updateWorkspaceSchema, params: workspaceIdSchema }),
   controller.update,
 );
+
 router.delete(
   "/:id",
   validate({ params: workspaceIdSchema }),

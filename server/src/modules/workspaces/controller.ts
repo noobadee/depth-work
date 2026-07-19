@@ -28,7 +28,7 @@ export class WorkspaceController {
     sendSuccess({
       res,
       data: workspace,
-      message: `Successfully fetched the workspace with ID: ${workspaceId}`,
+      message: `Successfully fetched a workspace with ID: ${workspaceId}`,
     });
   };
 
@@ -37,7 +37,7 @@ export class WorkspaceController {
     const body = req.body as CreateWorkspaceBody;
     const newWorkspace = await this.service.createWorkspace({
       ...body,
-      userId: user.id,
+      ownerId: user.id,
     });
     sendSuccess({
       res,

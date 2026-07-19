@@ -5,15 +5,14 @@ export const createWorkspaceSchema = z.object({
     .string()
     .min(1, "Workspace name is required")
     .max(100, "Workspace name cannot exceed 100 characters"),
-  type: z.enum(["personal", "team"]).optional(),
+  type: z.enum(["personal", "team"]),
 });
 
 export const updateWorkspaceSchema = z.object({
   name: z
     .string()
     .min(1, "Workspace name is required")
-    .max(100, "Workspace name cannot exceed 100 characters")
-    .optional(),
+    .max(100, "Workspace name cannot exceed 100 characters"),
 });
 
 export const workspaceIdSchema = z.object({
