@@ -5,6 +5,7 @@ import type { IWorkspaceMemberService } from "@/modules/workspace-members/types.
 import type {
   CreateWorkspaceMemberBody,
   UpdateWorkspaceMemberBody,
+  WorkspaceIdBody,
   WorkspaceMemberIdParams,
 } from "@/modules/workspace-members/schemas.ts";
 
@@ -12,7 +13,7 @@ export class WorkspaceMemberController {
   constructor(private readonly service: IWorkspaceMemberService) {}
 
   getAll = async (req: Request, res: Response) => {
-    const { id: workspaceId } = req.params as WorkspaceMemberIdParams;
+    const { workspaceId } = req.body as WorkspaceIdBody;
     const workspaceMembers =
       await this.service.getWorkspaceMembers(workspaceId);
     sendSuccess({
@@ -23,11 +24,11 @@ export class WorkspaceMemberController {
   };
 
   getOne = async (req: Request, res: Response) => {
-    const user = requireUser(req);
     const { id: workspaceMemberId } = req.params as WorkspaceMemberIdParams;
+    const { workspaceId } = req.body as WorkspaceIdBody;
     const workspaceMember = await this.service.getWorkspaceMember(
       workspaceMemberId,
-      user.id,
+      workspaceId,
     );
     sendSuccess({
       res,
@@ -38,13 +39,11 @@ export class WorkspaceMemberController {
 
   create = async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const { id: workspaceId } = req.params as WorkspaceMemberIdParams;
     const body = req.body as CreateWorkspaceMemberBody;
-    const newWorkspaceMember = await this.service.createWorkspaceMember({
-      ...body,
-      workspaceId,
-      userId: user.id,
-    });
+    const newWorkspaceMember = await this.service.createWorkspaceMember(
+      user.id,
+      body,
+    );
     sendSuccess({
       res,
       data: newWorkspaceMember,
@@ -58,7 +57,7 @@ export class WorkspaceMemberController {
     const { id: workspaceMemberId } = req.params as WorkspaceMemberIdParams;
     const body = req.body as UpdateWorkspaceMemberBody;
     const updatedWorkspaceMember = await this.service.updateWorkspaceMember(
-      workspaceMemberId,
+      { id: workspaceMemberId },
       user.id,
       body,
     );
@@ -72,8 +71,13 @@ export class WorkspaceMemberController {
 
   delete = async (req: Request, res: Response) => {
     const user = requireUser(req);
+    const { workspaceId } = req.body as WorkspaceIdBody;
     const { id: workspaceMemberId } = req.params as WorkspaceMemberIdParams;
-    await this.service.deleteWorkspaceMember(workspaceMemberId, user.id);
+    await this.service.deleteWorkspaceMember(
+      { id: workspaceMemberId },
+      { workspaceId },
+      user.id,
+    );
     sendSuccess({
       res,
       data: null,

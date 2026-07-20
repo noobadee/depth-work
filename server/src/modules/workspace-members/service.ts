@@ -1,5 +1,5 @@
+import { UserRepository } from "@/modules/auth/repository.ts";
 import {
-  ConflictError,
   DatabaseError,
   ForbiddenError,
   NotFoundError,
@@ -27,7 +27,7 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
 
   async getWorkspaceMember(
     id: string,
-    userId: string,
+    workspaceId: string,
   ): Promise<WorkspaceMember> {
     const workspaceMember = await this.repo.findById(id);
 
@@ -35,7 +35,7 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
       throw new NotFoundError("Workspace member");
     }
 
-    if (workspaceMember.userId !== userId) {
+    if (workspaceMember.workspaceId !== workspaceId) {
       throw new ForbiddenError("You are not a member of this workspace");
     }
 
@@ -43,21 +43,37 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
   }
 
   async createWorkspaceMember(
+    creatorId: string,
     data: CreateWorkspaceMemberInput,
   ): Promise<WorkspaceMember> {
-    const workspaceMembers = await this.getWorkspaceMembers(data.workspaceId);
-
-    const existing = workspaceMembers.filter(
-      (member) =>
-        member.workspaceId === data.workspaceId &&
-        member.userId === data.userId,
+    const inviter = await this.repo.findByWorkspaceUserId(
+      data.workspaceId,
+      creatorId,
     );
 
-    if (existing) {
-      throw new ConflictError("Workspace member already exists");
+    if (!inviter) {
+      throw new NotFoundError("Workspace member");
     }
 
-    const newWorkspaceMember = await this.repo.create(data);
+    if (["member", "viewer"].includes(inviter.role)) {
+      throw new ForbiddenError(
+        "You do not have permission to create a workspace member",
+      );
+    }
+
+    const userRepo = new UserRepository();
+
+    const invitedUser = await userRepo.findByEmail(data.inviteeEmail);
+
+    if (!invitedUser) {
+      throw new NotFoundError("User");
+    }
+
+    const newWorkspaceMember = await this.repo.create({
+      workspaceId: data.workspaceId,
+      userId: invitedUser.id,
+      role: data.role,
+    });
 
     if (!newWorkspaceMember) {
       throw new DatabaseError(
@@ -69,13 +85,31 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
   }
 
   async updateWorkspaceMember(
-    id: string,
+    params: { id: string },
     userId: string,
     data: UpdateWorkspaceMemberInput,
   ): Promise<WorkspaceMember> {
-    await this.getWorkspaceMember(id, userId); // verify existence and ownership
+    const updator = await this.repo.findByWorkspaceUserId(
+      data.workspaceId,
+      userId,
+    );
+    const workspaceMember = await this.repo.findById(params.id);
 
-    const updatedWorkspaceMember = await this.repo.update(id, data);
+    if (!updator || !workspaceMember) {
+      throw new NotFoundError("Workspace member");
+    }
+
+    if (
+      ["member", "viewer"].includes(updator.role) ||
+      (["admin"].includes(updator.role) &&
+        ["owner"].includes(workspaceMember.role))
+    ) {
+      throw new ForbiddenError(
+        "You do not have permission to update a workspace member",
+      );
+    }
+
+    const updatedWorkspaceMember = await this.repo.update(params.id, data);
 
     if (!updatedWorkspaceMember) {
       throw new DatabaseError(
@@ -86,8 +120,31 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
     return updatedWorkspaceMember;
   }
 
-  async deleteWorkspaceMember(id: string, userId: string): Promise<void> {
-    await this.getWorkspaceMember(id, userId); // verify existence and ownership
-    await this.repo.delete(id);
+  async deleteWorkspaceMember(
+    params: { id: string },
+    body: { workspaceId: string },
+    userId: string,
+  ): Promise<void> {
+    const deletor = await this.repo.findByWorkspaceUserId(
+      body.workspaceId,
+      userId,
+    );
+    const workspaceMember = await this.repo.findById(params.id);
+
+    if (!deletor || !workspaceMember) {
+      throw new NotFoundError("Workspace member");
+    }
+
+    if (
+      ["member", "viewer"].includes(deletor.role) ||
+      (["admin"].includes(deletor.role) &&
+        ["owner"].includes(workspaceMember.role))
+    ) {
+      throw new ForbiddenError(
+        "You do not have permission to remove a workspace member",
+      );
+    }
+
+    await this.repo.delete(params.id);
   }
 }

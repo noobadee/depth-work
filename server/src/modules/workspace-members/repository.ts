@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db/index.ts";
 import { workspaceMembers } from "@/db/schema/index.ts";
 import type { NewWorkspaceMember, WorkspaceMember } from "@/db/schema/index.ts";
@@ -13,6 +13,23 @@ export class WorkspaceMemberRepository implements IWorkspaceMemberRepository {
       .from(workspaceMembers)
       .where(eq(workspaceMembers.workspaceId, workspaceId))
       .orderBy(workspaceMembers.joined_at);
+    return result ?? null;
+  }
+
+  async findByWorkspaceUserId(
+    workspaceId: string,
+    userId: string,
+  ): Promise<WorkspaceMember | null> {
+    const [result] = await db
+      .select()
+      .from(workspaceMembers)
+      .where(
+        and(
+          eq(workspaceMembers.workspaceId, workspaceId),
+          eq(workspaceMembers.userId, userId),
+        ),
+      )
+      .limit(1);
     return result ?? null;
   }
 
@@ -32,7 +49,7 @@ export class WorkspaceMemberRepository implements IWorkspaceMemberRepository {
 
   async update(
     id: string,
-    data: Pick<WorkspaceMember, "role">,
+    data: Pick<WorkspaceMember, "workspaceId" | "role">,
   ): Promise<WorkspaceMember | null> {
     const [result] = await db
       .update(workspaceMembers)
