@@ -15,8 +15,8 @@ import type {
 export class WorkspaceService implements IWorkspaceService {
   constructor(private readonly repo: IWorkspaceRepository) {}
 
-  async getWorkspaces(userId: string): Promise<Workspace[]> {
-    const workspaces = await this.repo.findAllByOwner(userId);
+  async getWorkspaces(ownerId: string): Promise<Workspace[]> {
+    const workspaces = await this.repo.findAllByOwner(ownerId);
 
     if (!workspaces || workspaces.length === 0) {
       throw new NotFoundError("Workspace");
@@ -25,28 +25,31 @@ export class WorkspaceService implements IWorkspaceService {
     return workspaces;
   }
 
-  async getWorkspace(id: string, userId: string): Promise<Workspace> {
+  async getWorkspace(id: string, ownerId: string): Promise<Workspace> {
     const workspace = await this.repo.findById(id);
 
     if (!workspace) {
       throw new NotFoundError("Workspace");
     }
 
-    if (workspace.ownerId !== userId) {
+    if (workspace.ownerId !== ownerId) {
       throw new ForbiddenError("You do not have access to this workspace");
     }
 
     return workspace;
   }
 
-  async createWorkspace(data: CreateWorkspaceInput): Promise<Workspace> {
-    const existing = await this.repo.findByName(data.name);
+  async createWorkspace(
+    ownerId: string,
+    body: CreateWorkspaceInput,
+  ): Promise<Workspace> {
+    const existing = await this.repo.findByName(body.name);
 
     if (existing) {
       throw new ConflictError("Workspace name already exists");
     }
 
-    const newWorkspace = await this.repo.create(data);
+    const newWorkspace = await this.repo.create({ ...body, ownerId });
 
     if (!newWorkspace) {
       throw new DatabaseError(
@@ -59,18 +62,18 @@ export class WorkspaceService implements IWorkspaceService {
 
   async updateWorkspace(
     id: string,
-    userId: string,
-    data: UpdateWorkspaceInput,
+    ownerId: string,
+    body: UpdateWorkspaceInput,
   ): Promise<Workspace> {
-    await this.getWorkspace(id, userId); // verify existence and ownership
+    await this.getWorkspace(id, ownerId); // verify existence and ownership
 
-    const duplicateName = await this.repo.findByName(data.name);
+    const duplicateName = await this.repo.findByName(body.name);
 
     if (duplicateName) {
       throw new ConflictError("Workspace name already exists");
     }
 
-    const updatedWorkspace = await this.repo.update(id, data);
+    const updatedWorkspace = await this.repo.update(id, body);
 
     if (!updatedWorkspace) {
       throw new DatabaseError(
@@ -81,8 +84,8 @@ export class WorkspaceService implements IWorkspaceService {
     return updatedWorkspace;
   }
 
-  async deleteWorkspace(id: string, userId: string): Promise<void> {
-    await this.getWorkspace(id, userId); // verify existence and ownership
+  async deleteWorkspace(id: string, ownerId: string): Promise<void> {
+    await this.getWorkspace(id, ownerId); // verify existence and ownership
     await this.repo.delete(id);
   }
 }

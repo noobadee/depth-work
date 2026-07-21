@@ -23,22 +23,19 @@ export class WorkspaceController {
 
   getOne = async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const { id: workspaceId } = req.params as WorkspaceIdParams;
-    const workspace = await this.service.getWorkspace(workspaceId, user.id);
+    const { workspace_id } = req.params as WorkspaceIdParams;
+    const workspace = await this.service.getWorkspace(workspace_id, user.id);
     sendSuccess({
       res,
       data: workspace,
-      message: `Successfully fetched a workspace with ID: ${workspaceId}`,
+      message: `Successfully fetched a workspace with ID: ${workspace_id}`,
     });
   };
 
   create = async (req: Request, res: Response) => {
     const user = requireUser(req);
     const body = req.body as CreateWorkspaceBody;
-    const newWorkspace = await this.service.createWorkspace({
-      ...body,
-      ownerId: user.id,
-    });
+    const newWorkspace = await this.service.createWorkspace(user.id, body);
     sendSuccess({
       res,
       data: newWorkspace,
@@ -50,9 +47,9 @@ export class WorkspaceController {
   update = async (req: Request, res: Response) => {
     const user = requireUser(req);
     const body = req.body as UpdateWorkspaceBody;
-    const { id: workspaceId } = req.params as WorkspaceIdParams;
+    const { workspace_id } = req.params as WorkspaceIdParams;
     const updatedWorkspace = await this.service.updateWorkspace(
-      workspaceId,
+      workspace_id,
       user.id,
       body,
     );
@@ -66,8 +63,8 @@ export class WorkspaceController {
 
   delete = async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const { id: workspaceId } = req.params as WorkspaceIdParams;
-    await this.service.deleteWorkspace(workspaceId, user.id);
+    const { workspace_id } = req.params as WorkspaceIdParams;
+    await this.service.deleteWorkspace(workspace_id, user.id);
     sendSuccess({
       res,
       data: null,

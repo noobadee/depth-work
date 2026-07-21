@@ -10,21 +10,23 @@ export interface IWorkspaceRepository {
 }
 
 export interface IWorkspaceService {
-  getWorkspaces(userId: string): Promise<Workspace[]>;
-  getWorkspace(id: string, userId: string): Promise<Workspace>;
-  createWorkspace(data: CreateWorkspaceInput): Promise<Workspace>;
+  getWorkspaces(ownerId: string): Promise<Workspace[]>;
+  getWorkspace(id: string, ownerId: string): Promise<Workspace>;
+  createWorkspace(
+    ownerId: string,
+    body: CreateWorkspaceInput,
+  ): Promise<Workspace>;
   updateWorkspace(
     id: string,
-    userId: string,
-    data: UpdateWorkspaceInput,
+    ownerId: string,
+    body: UpdateWorkspaceInput,
   ): Promise<Workspace>;
-  deleteWorkspace(id: string, userId: string): Promise<void>;
+  deleteWorkspace(id: string, ownerId: string): Promise<void>;
 }
 
 export interface CreateWorkspaceInput {
   name: string;
   type: "personal" | "team";
-  ownerId: string;
 }
 
 export interface UpdateWorkspaceInput {

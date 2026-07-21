@@ -5,7 +5,7 @@ import { WorkspaceController } from "@/modules/workspaces/controller.ts";
 import {
   createWorkspaceSchema,
   updateWorkspaceSchema,
-  workspaceIdSchema,
+  paramIdSchema,
 } from "@/modules/workspaces/schemas.ts";
 import { validate } from "@/common/middleware/validate.ts";
 import { requireAuth } from "@/middleware/auth.middleware.ts";
@@ -20,19 +20,26 @@ router.use(requireAuth);
 
 router.get("/", controller.getAll);
 
-router.get("/:id", validate({ params: workspaceIdSchema }), controller.getOne);
+router.get(
+  "/:workspace_id",
+  validate({ params: paramIdSchema }),
+  controller.getOne,
+);
 
 router.post("/", validate({ body: createWorkspaceSchema }), controller.create);
 
+// TODO: transfer ownership
+// router.post("/:workspace_id/transfer-ownership");
+
 router.patch(
-  "/:id",
-  validate({ body: updateWorkspaceSchema, params: workspaceIdSchema }),
+  "/:workspace_id",
+  validate({ body: updateWorkspaceSchema, params: paramIdSchema }),
   controller.update,
 );
 
 router.delete(
-  "/:id",
-  validate({ params: workspaceIdSchema }),
+  "/:workspace_id",
+  validate({ params: paramIdSchema }),
   controller.delete,
 );
 
