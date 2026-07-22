@@ -5,7 +5,7 @@ import type { IWorkspaceService } from "@/modules/workspaces/types.ts";
 import type {
   CreateWorkspaceBody,
   UpdateWorkspaceBody,
-  WorkspaceIdParams,
+  WorkspaceIdParam,
 } from "@/modules/workspaces/schemas.ts";
 
 export class WorkspaceController {
@@ -23,7 +23,7 @@ export class WorkspaceController {
 
   getOne = async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const { workspace_id } = req.params as WorkspaceIdParams;
+    const { workspace_id } = req.params as WorkspaceIdParam;
     const workspace = await this.service.getWorkspace(workspace_id, user.id);
     sendSuccess({
       res,
@@ -47,7 +47,7 @@ export class WorkspaceController {
   update = async (req: Request, res: Response) => {
     const user = requireUser(req);
     const body = req.body as UpdateWorkspaceBody;
-    const { workspace_id } = req.params as WorkspaceIdParams;
+    const { workspace_id } = req.params as WorkspaceIdParam;
     const updatedWorkspace = await this.service.updateWorkspace(
       workspace_id,
       user.id,
@@ -63,7 +63,7 @@ export class WorkspaceController {
 
   delete = async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const { workspace_id } = req.params as WorkspaceIdParams;
+    const { workspace_id } = req.params as WorkspaceIdParam;
     await this.service.deleteWorkspace(workspace_id, user.id);
     sendSuccess({
       res,

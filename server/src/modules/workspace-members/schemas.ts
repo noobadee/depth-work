@@ -2,21 +2,16 @@ import { z } from "zod";
 
 export const createWorkspaceMemberSchema = z.object({
   role: z.enum(["owner", "admin", "member", "viewer"]),
-  workspaceId: z.uuid("Invalid workspace ID"),
-  inviteeEmail: z.email(),
+  email: z.email(),
 });
 
 export const updateWorkspaceMemberSchema = z.object({
-  workspaceId: z.uuid("Invalid workspace ID"),
   role: z.enum(["owner", "admin", "member", "viewer"]),
 });
 
-export const workspaceIdSchema = z.object({
-  workspaceId: z.uuid("Invalid workspace ID"),
-});
-
-export const workspaceMemberIdSchema = z.object({
-  id: z.uuid("Invalid workspace member ID"),
+export const memberParamsSchema = z.object({
+  user_id: z.string().min(1, "User ID is required"),
+  workspace_id: z.uuid("Invalid workspace ID"),
 });
 
 export type CreateWorkspaceMemberBody = z.infer<
@@ -27,6 +22,4 @@ export type UpdateWorkspaceMemberBody = z.infer<
   typeof updateWorkspaceMemberSchema
 >;
 
-export type WorkspaceIdBody = z.infer<typeof workspaceIdSchema>;
-
-export type WorkspaceMemberIdParams = z.infer<typeof workspaceMemberIdSchema>;
+export type WorkspaceMemberParams = z.infer<typeof memberParamsSchema>;

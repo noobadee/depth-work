@@ -52,7 +52,7 @@ function createApp() {
   // ──── FEATURE ROUTES ────────────────────────────────────────────────────────────────────────────
 
   app.use("/api/workspaces", workspacesRouter);
-  app.use("/api/workspace-members", workspaceMembersRouter);
+  app.use("/api/workspaces/:workspace_id/members", workspaceMembersRouter);
 
   // ──── GLOBAL ERROR HANDLER ────────────────────────────────────────────────────────────────────────────
 

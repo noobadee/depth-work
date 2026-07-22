@@ -5,7 +5,7 @@ import { WorkspaceController } from "@/modules/workspaces/controller.ts";
 import {
   createWorkspaceSchema,
   updateWorkspaceSchema,
-  paramIdSchema,
+  workspaceIdParamSchema,
 } from "@/modules/workspaces/schemas.ts";
 import { validate } from "@/common/middleware/validate.ts";
 import { requireAuth } from "@/middleware/auth.middleware.ts";
@@ -22,7 +22,7 @@ router.get("/", controller.getAll);
 
 router.get(
   "/:workspace_id",
-  validate({ params: paramIdSchema }),
+  validate({ params: workspaceIdParamSchema }),
   controller.getOne,
 );
 
@@ -33,13 +33,13 @@ router.post("/", validate({ body: createWorkspaceSchema }), controller.create);
 
 router.patch(
   "/:workspace_id",
-  validate({ body: updateWorkspaceSchema, params: paramIdSchema }),
+  validate({ body: updateWorkspaceSchema, params: workspaceIdParamSchema }),
   controller.update,
 );
 
 router.delete(
   "/:workspace_id",
-  validate({ params: paramIdSchema }),
+  validate({ params: workspaceIdParamSchema }),
   controller.delete,
 );
 

@@ -5,7 +5,7 @@ import type { NewWorkspaceMember, WorkspaceMember } from "@/db/schema/index.ts";
 import type { IWorkspaceMemberRepository } from "@/modules/workspace-members/types.ts";
 
 export class WorkspaceMemberRepository implements IWorkspaceMemberRepository {
-  async findAllByWorkspaceId(
+  async findAllByWorkspace(
     workspaceId: string,
   ): Promise<WorkspaceMember[] | null> {
     const result = await db
@@ -16,9 +16,9 @@ export class WorkspaceMemberRepository implements IWorkspaceMemberRepository {
     return result ?? null;
   }
 
-  async findByWorkspaceUserId(
-    workspaceId: string,
+  async findByOwner(
     userId: string,
+    workspaceId: string,
   ): Promise<WorkspaceMember | null> {
     const [result] = await db
       .select()
@@ -49,11 +49,11 @@ export class WorkspaceMemberRepository implements IWorkspaceMemberRepository {
 
   async update(
     id: string,
-    data: Pick<WorkspaceMember, "workspaceId" | "role">,
+    data: Pick<WorkspaceMember, "role">,
   ): Promise<WorkspaceMember | null> {
     const [result] = await db
       .update(workspaceMembers)
-      .set({ ...data })
+      .set(data)
       .where(eq(workspaceMembers.id, id))
       .returning();
     return result ?? null;

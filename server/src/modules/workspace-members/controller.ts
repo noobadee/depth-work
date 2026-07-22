@@ -1,21 +1,20 @@
-import { requireUser } from "@/middleware/auth.middleware.ts";
 import { sendSuccess } from "@/utils/response.ts";
 import type { Request, Response } from "express";
 import type { IWorkspaceMemberService } from "@/modules/workspace-members/types.ts";
 import type {
   CreateWorkspaceMemberBody,
   UpdateWorkspaceMemberBody,
-  WorkspaceIdBody,
-  WorkspaceMemberIdParams,
+  WorkspaceMemberParams,
 } from "@/modules/workspace-members/schemas.ts";
+import type { WorkspaceIdParam } from "@/modules/workspaces/schemas.ts";
 
 export class WorkspaceMemberController {
   constructor(private readonly service: IWorkspaceMemberService) {}
 
   getAll = async (req: Request, res: Response) => {
-    const { workspaceId } = req.body as WorkspaceIdBody;
+    const { workspace_id } = req.params as WorkspaceIdParam;
     const workspaceMembers =
-      await this.service.getWorkspaceMembers(workspaceId);
+      await this.service.getWorkspaceMembers(workspace_id);
     sendSuccess({
       res,
       data: workspaceMembers,
@@ -23,25 +22,25 @@ export class WorkspaceMemberController {
     });
   };
 
-  getOne = async (req: Request, res: Response) => {
-    const { id: workspaceMemberId } = req.params as WorkspaceMemberIdParams;
-    const { workspaceId } = req.body as WorkspaceIdBody;
-    const workspaceMember = await this.service.getWorkspaceMember(
-      workspaceMemberId,
-      workspaceId,
-    );
-    sendSuccess({
-      res,
-      data: workspaceMember,
-      message: `Successfully fetched a workspace member with ID: ${workspaceMemberId}`,
-    });
-  };
+  // getOne = async (req: Request, res: Response) => {
+  //   // find by email and user_id (path parameter)
+  //   const { member_id, workspace_id } = req.params as WorkspaceMemberParams;
+  //   const workspaceMember = await this.service.getWorkspaceMember(
+  //     member_id,
+  //     workspace_id,
+  //   );
+  //   sendSuccess({
+  //     res,
+  //     data: workspaceMember,
+  //     message: `Successfully fetched a workspace member with ID: ${member_id}`,
+  //   });
+  // };
 
   create = async (req: Request, res: Response) => {
-    const user = requireUser(req);
+    const { workspace_id } = req.params as WorkspaceIdParam;
     const body = req.body as CreateWorkspaceMemberBody;
     const newWorkspaceMember = await this.service.createWorkspaceMember(
-      user.id,
+      workspace_id,
       body,
     );
     sendSuccess({
@@ -53,12 +52,11 @@ export class WorkspaceMemberController {
   };
 
   update = async (req: Request, res: Response) => {
-    const user = requireUser(req);
-    const { id: workspaceMemberId } = req.params as WorkspaceMemberIdParams;
+    const { user_id, workspace_id } = req.params as WorkspaceMemberParams;
     const body = req.body as UpdateWorkspaceMemberBody;
     const updatedWorkspaceMember = await this.service.updateWorkspaceMember(
-      { id: workspaceMemberId },
-      user.id,
+      user_id,
+      workspace_id,
       body,
     );
     sendSuccess({
@@ -70,14 +68,9 @@ export class WorkspaceMemberController {
   };
 
   delete = async (req: Request, res: Response) => {
-    const user = requireUser(req);
-    const { workspaceId } = req.body as WorkspaceIdBody;
-    const { id: workspaceMemberId } = req.params as WorkspaceMemberIdParams;
-    await this.service.deleteWorkspaceMember(
-      { id: workspaceMemberId },
-      { workspaceId },
-      user.id,
-    );
+    // const user = requireUser(req);
+    const { user_id, workspace_id } = req.params as WorkspaceMemberParams;
+    await this.service.deleteWorkspaceMember(user_id, workspace_id);
     sendSuccess({
       res,
       data: null,

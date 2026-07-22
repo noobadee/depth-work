@@ -15,10 +15,10 @@ export const updateWorkspaceSchema = z.object({
     .max(100, "Workspace name cannot exceed 100 characters"),
 });
 
-export const paramIdSchema = z.object({
+export const workspaceIdParamSchema = z.object({
   workspace_id: z.uuid("Invalid workspace ID"),
 });
 
 export type CreateWorkspaceBody = z.infer<typeof createWorkspaceSchema>;
 export type UpdateWorkspaceBody = z.infer<typeof updateWorkspaceSchema>;
-export type WorkspaceIdParams = z.infer<typeof paramIdSchema>;
+export type WorkspaceIdParam = z.infer<typeof workspaceIdParamSchema>;
