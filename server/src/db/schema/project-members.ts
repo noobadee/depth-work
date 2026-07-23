@@ -18,3 +18,4 @@ export const projectMembers = pgTable(
 );
 
 export type NewProjectMember = typeof projectMembers.$inferInsert;
+export type ProjectMember = typeof projectMembers.$inferSelect;
