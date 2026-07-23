@@ -65,3 +65,4 @@ export const tasks = pgTable(
 );
 
 export type NewTask = typeof tasks.$inferInsert;
+export type Task = typeof tasks.$inferSelect;
