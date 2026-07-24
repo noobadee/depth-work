@@ -24,9 +24,7 @@ export const focus_sessions = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    title: varchar("title", { length: 255 })
-      .notNull()
-      .default(sql`to_char(now(), 'Mon DD, YYYY HH12:MI AM')`),
+    title: varchar("title", { length: 255 }),
     status: focusStatusEnum("status").notNull().default("active"),
     started_at: timestamp("started_at", { withTimezone: true })
       .notNull()
@@ -60,3 +58,4 @@ export const focus_sessions = pgTable(
 );
 
 export type NewFocusSession = typeof focus_sessions.$inferInsert;
+export type FocusSession = typeof focus_sessions.$inferSelect;
