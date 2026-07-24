@@ -52,6 +52,7 @@ export const tasks = pgTable(
       .notNull()
       .defaultNow(),
     updated_at: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
       .notNull()
       .defaultNow(),
   },

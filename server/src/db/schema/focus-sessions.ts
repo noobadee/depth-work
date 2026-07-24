@@ -37,6 +37,7 @@ export const focus_sessions = pgTable(
       .notNull()
       .defaultNow(),
     updated_at: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
       .notNull()
       .defaultNow(),
   },
