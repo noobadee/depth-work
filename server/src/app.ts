@@ -14,6 +14,9 @@ import { workspacesRouter } from "@/modules/workspaces/router.ts";
 import { workspaceMembersRouter } from "@/modules/workspace-members/router.ts";
 import { projectsRouter } from "@/modules/projects/router.ts";
 import { projectMembersRouter } from "@/modules/project-members/router.ts";
+import { tasksRouter } from "@/modules/tasks/router.ts";
+import { focusSessionsRouter } from "@/modules/focus-sessions/router.ts";
+import { focusSessionTasksRouter } from "@/modules/focus-session-tasks/router.ts";
 // import { passwordResetLimiter } from "./middleware/rate-limit.middleware.ts";
 
 function createApp() {
@@ -57,6 +60,9 @@ function createApp() {
   app.use("/api/workspaces/:workspace_id/members", workspaceMembersRouter);
   app.use("/api", projectsRouter);
   app.use("/api/projects", projectMembersRouter);
+  app.use("/api", tasksRouter);
+  app.use("/api/focus-sessions", focusSessionsRouter);
+  app.use("/api/focus-sessions/:focus_id/tasks", focusSessionTasksRouter);
 
   // ──── GLOBAL ERROR HANDLER ────────────────────────────────────────────────────────────────────────────
 

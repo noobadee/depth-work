@@ -24,3 +24,4 @@ export const focus_session_tasks = pgTable("focus_session_tasks", {
 });
 
 export type NewFocusSessionTask = typeof focus_session_tasks.$inferInsert;
+export type FocusSessionTask = typeof focus_session_tasks.$inferSelect;

@@ -13,7 +13,8 @@
     "db:seed:team": "tsx ./src/seed/index.ts activeTeam",
     "db:seed:reset": "tsx ./src/seed/index.ts --reset",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
