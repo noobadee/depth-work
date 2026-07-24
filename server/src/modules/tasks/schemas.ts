@@ -9,8 +9,7 @@ export const createTaskSchema = z.object({
   description: z.string().min(1, "Task description is required").optional(),
   priority: z.enum(["low", "medium", "high"]).optional(),
   status: z.enum(["pending", "in_progress", "completed"]).optional(),
-  dueDate: z.iso.datetime({ offset: true }).optional(),
-  completed_at: z.iso.datetime({ offset: true }).optional(),
+  dueDate: z.date().nullable().optional(),
   position: z.number().int("Task position must be an integer").optional(),
 });
 
@@ -24,8 +23,7 @@ export const updateTaskSchema = z.object({
   description: z.string().min(1, "Task description is required").optional(),
   priority: z.enum(["low", "medium", "high"]).optional(),
   status: z.enum(["pending", "in_progress", "completed"]).optional(),
-  dueDate: z.iso.datetime({ offset: true }).optional(),
-  completed_at: z.iso.datetime({ offset: true }).optional(),
+  dueDate: z.date().nullable().optional(),
   position: z.number().int("Task position must be an integer").optional(),
 });
 

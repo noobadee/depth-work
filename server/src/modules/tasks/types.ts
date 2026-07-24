@@ -63,7 +63,6 @@ export interface CreateTaskInput {
   priority?: "low" | "medium" | "high";
   status?: "pending" | "in_progress" | "completed";
   dueDate?: Date | null;
-  completed_at?: Date | null;
   position?: number;
 }
 
@@ -73,7 +72,6 @@ export interface UpdateTaskInput {
   description?: string;
   priority?: "low" | "medium" | "high";
   status?: "pending" | "in_progress" | "completed";
-  due_date?: Date | null;
-  completed_at?: Date | null;
+  dueDate?: Date | null;
   position?: number;
 }
