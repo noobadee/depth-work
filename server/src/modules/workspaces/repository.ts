@@ -43,7 +43,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
   ): Promise<Workspace | null> {
     const [workspace] = await db
       .update(workspaces)
-      .set({ ...data, updated_at: new Date() })
+      .set(data)
       .where(eq(workspaces.workspace_id, id))
       .returning();
     return workspace ?? null;
