@@ -9,7 +9,8 @@ export class TaskRepository implements ITaskRepository {
     const result = await db
       .select()
       .from(tasks)
-      .where(eq(tasks.workspace_id, workspaceId));
+      .where(eq(tasks.workspace_id, workspaceId))
+      .orderBy(tasks.created_at);
     return result ?? null;
   }
 
@@ -17,7 +18,8 @@ export class TaskRepository implements ITaskRepository {
     const result = await db
       .select()
       .from(tasks)
-      .where(eq(tasks.projectId, projectId));
+      .where(eq(tasks.projectId, projectId))
+      .orderBy(tasks.created_at);
     return result ?? null;
   }
 

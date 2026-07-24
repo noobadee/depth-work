@@ -4,7 +4,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/common/errors/index.ts";
-import type { Task } from "@/db/schema/tasks.ts";
+import type { Task } from "@/db/schema/index.ts";
 import type {
   CreateTaskInput,
   ITaskRepository,
