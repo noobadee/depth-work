@@ -1,7 +1,6 @@
 import {
   ConflictError,
   DatabaseError,
-  ForbiddenError,
   NotFoundError,
   ValidationError,
 } from "@/common/errors/index.ts";

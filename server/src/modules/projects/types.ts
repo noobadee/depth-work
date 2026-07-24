@@ -48,7 +48,7 @@ export interface CreateProjectInput {
 
 export interface UpdateProjectInput {
   title: string;
-  description: string;
+  description: string | null;
   status: "pending" | "in_progress" | "completed" | "archived";
   startDate: Date | null;
   dueDate: Date | null;

@@ -5,12 +5,12 @@ export const createProjectSchema = z.object({
     .string()
     .min(1, "Project title is required")
     .max(255, "Project title must not exceed 255 characters"),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   status: z
     .enum(["pending", "in_progress", "completed", "archived"])
     .optional(),
-  start_date: z.iso.datetime({ offset: true }).optional(),
-  due_date: z.iso.datetime({ offset: true }).optional(),
+  startDate: z.date().nullable().optional(),
+  dueDate: z.date().nullable().optional(),
   position: z.number().int("Project position must be an integer").optional(),
 });
 
@@ -20,12 +20,12 @@ export const updateProjectSchema = z.object({
     .min(1, "Project title is required")
     .max(255, "Project title must not exceed 255 characters")
     .optional(),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   status: z
     .enum(["pending", "in_progress", "completed", "archived"])
     .optional(),
-  start_date: z.iso.datetime({ offset: true }).optional(),
-  due_date: z.iso.datetime({ offset: true }).optional(),
+  startDate: z.date().nullable().optional(),
+  dueDate: z.date().nullable().optional(),
   position: z.number().int("Project position must be an integer").optional(),
 });
 
