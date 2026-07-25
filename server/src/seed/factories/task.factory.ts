@@ -21,7 +21,7 @@ function makeTasks(tasks: MakeTask[]): NewTask[] {
   const newTasks = tasks.map((task) => ({
     task_id: randomUUID(),
     workspace_id: task.workspaceId,
-    project_id: task.projectId,
+    projectId: task.projectId,
     createdBy: task.createdBy,
     assignedTo: task.assignedTo,
     title: task.title,

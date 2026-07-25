@@ -52,6 +52,7 @@ export const tasks = pgTable(
       .notNull()
       .defaultNow(),
     updated_at: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
       .notNull()
       .defaultNow(),
   },
@@ -65,3 +66,4 @@ export const tasks = pgTable(
 );
 
 export type NewTask = typeof tasks.$inferInsert;
+export type Task = typeof tasks.$inferSelect;

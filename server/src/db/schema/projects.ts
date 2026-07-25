@@ -40,6 +40,7 @@ export const projects = pgTable(
       .notNull()
       .defaultNow(),
     updated_at: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
       .notNull()
       .defaultNow(),
   },
