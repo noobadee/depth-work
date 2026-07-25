@@ -3,6 +3,7 @@ import {
   DatabaseError,
   ForbiddenError,
   NotFoundError,
+  ValidationError,
 } from "@/common/errors/index.ts";
 import type { FocusSession } from "@/db/schema/index.ts";
 import type {
@@ -72,6 +73,10 @@ export class FocusSessionService implements IFocusSessionService {
     body: UpdateFocusSessionInput,
   ): Promise<FocusSession> {
     await this.getFocusSession(id, ownerId); // verify existence and ownership
+
+    if (Object.keys(body).length === 0) {
+      throw new ValidationError("The body cannot be empty");
+    }
 
     const duplicateTitle = body.title
       ? await this.repo.findByTitle(body.title)
