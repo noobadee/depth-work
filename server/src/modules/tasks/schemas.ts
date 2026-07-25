@@ -5,8 +5,12 @@ export const createTaskSchema = z.object({
     .string()
     .min(1, "Task title is required")
     .max(255, "Task title must not exceed 255 characters"),
-  assignedTo: z.string().min(1, "User ID is required").optional(),
-  description: z.string().min(1, "Task description is required").optional(),
+  assignedTo: z.string().min(1, "User ID is required").nullable().optional(),
+  description: z
+    .string()
+    .min(1, "Task description is required")
+    .nullable()
+    .optional(),
   priority: z.enum(["low", "medium", "high"]).optional(),
   status: z.enum(["pending", "in_progress", "completed"]).optional(),
   dueDate: z.date().nullable().optional(),
@@ -19,8 +23,12 @@ export const updateTaskSchema = z.object({
     .min(1, "Task title is required")
     .max(255, "Task title must not exceed 255 characters")
     .optional(),
-  assignedTo: z.string().min(1, "User ID is required").optional(),
-  description: z.string().min(1, "Task description is required").optional(),
+  assignedTo: z.string().min(1, "User ID is required").nullable().optional(),
+  description: z
+    .string()
+    .min(1, "Task description is required")
+    .nullable()
+    .optional(),
   priority: z.enum(["low", "medium", "high"]).optional(),
   status: z.enum(["pending", "in_progress", "completed"]).optional(),
   dueDate: z.date().nullable().optional(),

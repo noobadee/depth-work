@@ -39,7 +39,7 @@ export class TaskController {
     sendSuccess({ res, data: task, message: "Successfully fetched a task" });
   };
 
-  createTask = async (req: Request, res: Response) => {
+  create = async (req: Request, res: Response) => {
     const user = requireUser(req);
     const { workspace_id } = req.params as WorkspaceIdParam;
     const body = req.body as CreateTaskBody;
@@ -52,14 +52,12 @@ export class TaskController {
     });
   };
 
-  createTaskUnderProject = async (req: Request, res: Response) => {
+  createUnderProject = async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const { workspace_id } = req.params as WorkspaceIdParam;
     const { project_id } = req.params as ProjectIdParam;
     const body = req.body as CreateTaskBody;
     const newTask = await this.service.createTaskUnderProject(
       user.id,
-      workspace_id,
       project_id,
       body,
     );

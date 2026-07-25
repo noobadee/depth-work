@@ -46,25 +46,25 @@ router.post(
   "/workspaces/:workspace_id/tasks",
   validate({ body: createTaskSchema, params: workspaceIdParamSchema }),
   createTaskActionGuard(),
-  controller.createTask,
+  controller.create,
 );
 
 router.post(
   "/projects/:project_id/tasks",
   validate({ body: createTaskSchema, params: projectIdParamSchema }),
   createTaskActionGuard({ withProjectIdParam: true }),
-  controller.createTaskUnderProject,
+  controller.createUnderProject,
 );
 
 router.patch(
   "/tasks/:task_id",
   validate({ body: updateTaskSchema, params: taskIdParamSchema }),
-  taskActionGuard(),
+  taskActionGuard({ withBody: true }),
   controller.update,
 );
 
 router.delete(
-  "tasks/:task_id",
+  "/tasks/:task_id",
   validate({ params: taskIdParamSchema }),
   taskActionGuard(),
   controller.delete,

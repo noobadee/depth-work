@@ -9,15 +9,8 @@ export interface ITaskRepository {
     title: string,
     projectId: string,
   ): Promise<Task | null>;
-  createTaskUnderWorkspace(
-    workspaceId: string,
-    data: NewTask,
-  ): Promise<Task | null>;
-  createTaskUnderProject(
-    workspaceId: string,
-    projectId: string,
-    data: NewTask,
-  ): Promise<Task | null>;
+  createTaskUnderWorkspace(data: NewTask): Promise<Task | null>;
+  createTaskUnderProject(data: NewTask): Promise<Task | null>;
   update(
     id: string,
     data: Partial<
@@ -48,7 +41,6 @@ export interface ITaskService {
   ): Promise<Task | null>;
   createTaskUnderProject(
     creatorId: string,
-    workspaceId: string,
     projectId: string,
     body: CreateTaskInput,
   ): Promise<Task | null>;
@@ -58,8 +50,8 @@ export interface ITaskService {
 
 export interface CreateTaskInput {
   title: string;
-  assignedTo?: string;
-  description?: string;
+  assignedTo?: string | null;
+  description?: string | null;
   priority?: "low" | "medium" | "high";
   status?: "pending" | "in_progress" | "completed";
   dueDate?: Date | null;
@@ -68,8 +60,8 @@ export interface CreateTaskInput {
 
 export interface UpdateTaskInput {
   title?: string;
-  assignedTo?: string;
-  description?: string;
+  assignedTo?: string | null;
+  description?: string | null;
   priority?: "low" | "medium" | "high";
   status?: "pending" | "in_progress" | "completed";
   dueDate?: Date | null;

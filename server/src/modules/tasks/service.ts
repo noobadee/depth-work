@@ -4,6 +4,8 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/common/errors/index.ts";
+import { UserRepository } from "@/modules/auth/repository.ts";
+import { ProjectRepository } from "@/modules/projects/repository.ts";
 import type { Task } from "@/db/schema/index.ts";
 import type {
   CreateTaskInput,
@@ -53,10 +55,14 @@ export class TaskService implements ITaskService {
     const existingTask = await this.repo.findByTitle(body.title);
 
     if (existingTask) {
-      throw new ConflictError("Task already exists in a project");
+      throw new ConflictError("Task already exists");
     }
 
-    const newTask = await this.createTask(creatorId, workspaceId, body);
+    const newTask = await this.repo.createTaskUnderWorkspace({
+      ...body,
+      createdBy: creatorId,
+      workspace_id: workspaceId,
+    });
 
     if (!newTask) {
       throw new DatabaseError(
@@ -69,7 +75,6 @@ export class TaskService implements ITaskService {
 
   async createTaskUnderProject(
     creatorId: string,
-    workspaceId: string,
     projectId: string,
     body: CreateTaskInput,
   ): Promise<Task | null> {
@@ -82,12 +87,20 @@ export class TaskService implements ITaskService {
       throw new ConflictError("Task already exists in a project");
     }
 
-    const newTask = await this.createTaskUnderProject(
-      creatorId,
-      workspaceId,
+    const projectRepo = new ProjectRepository();
+
+    const project = await projectRepo.findById(projectId);
+
+    if (!project) {
+      throw new NotFoundError("Project");
+    }
+
+    const newTask = await this.repo.createTaskUnderProject({
+      ...body,
+      createdBy: creatorId,
+      workspace_id: project.workspaceId,
       projectId,
-      body,
-    );
+    });
 
     if (!newTask) {
       throw new DatabaseError(
@@ -101,6 +114,14 @@ export class TaskService implements ITaskService {
   async updateTask(id: string, body: UpdateTaskInput): Promise<Task | null> {
     if (Object.keys(body).length === 0) {
       throw new ValidationError("The body cannot be empty");
+    }
+
+    if (body.assignedTo) {
+      const userRepo = new UserRepository();
+      const user = await userRepo.findById(body.assignedTo);
+      if (!user) {
+        throw new NotFoundError("User");
+      }
     }
 
     const updatedTask = await this.repo.update(id, body);

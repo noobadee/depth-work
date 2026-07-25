@@ -53,26 +53,13 @@ export class TaskRepository implements ITaskRepository {
     return result ?? null;
   }
 
-  async createTaskUnderWorkspace(
-    workspaceId: string,
-    data: NewTask,
-  ): Promise<Task | null> {
-    const [result] = await db
-      .insert(tasks)
-      .values({ ...data, workspace_id: workspaceId })
-      .returning();
+  async createTaskUnderWorkspace(data: NewTask): Promise<Task | null> {
+    const [result] = await db.insert(tasks).values(data).returning();
     return result ?? null;
   }
 
-  async createTaskUnderProject(
-    workspaceId: string,
-    projectId: string,
-    data: NewTask,
-  ): Promise<Task | null> {
-    const [result] = await db
-      .insert(tasks)
-      .values({ ...data, workspace_id: workspaceId, projectId })
-      .returning();
+  async createTaskUnderProject(data: NewTask): Promise<Task | null> {
+    const [result] = await db.insert(tasks).values(data).returning();
     return result ?? null;
   }
 

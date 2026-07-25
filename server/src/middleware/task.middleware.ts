@@ -6,10 +6,10 @@ import { ProjectMemberRepository } from "@/modules/project-members/repository.ts
 import { WorkspaceMemberRepository } from "@/modules/workspace-members/repository.ts";
 import type { RequestHandler } from "express";
 import type { ProjectIdParam } from "@/modules/projects/schemas.ts";
-import type { TaskIdParam } from "@/modules/tasks/schemas.ts";
+import type { TaskIdParam, UpdateTaskBody } from "@/modules/tasks/schemas.ts";
 import type { WorkspaceIdParam } from "@/modules/workspaces/schemas.ts";
 
-export function taskActionGuard(): RequestHandler {
+export function taskActionGuard({ withBody = false }: { withBody?: boolean } = {}): RequestHandler {
   return async (req, _res, next) => {
     const user = requireUser(req);
     const workspaceMemberRepo = new WorkspaceMemberRepository();
@@ -21,11 +21,6 @@ export function taskActionGuard(): RequestHandler {
 
     if (!task) {
       next(new NotFoundError("Task"));
-      return;
-    }
-
-    if (!task.createdBy || !task.assignedTo) {
-      next();
       return;
     }
 
@@ -49,9 +44,18 @@ export function taskActionGuard(): RequestHandler {
       return;
     }
 
-    if (editor.userId !== task.createdBy && editor.userId !== task.assignedTo) {
+    if (![task.createdBy, task.assignedTo].includes(editor.userId)) {
       next(new ForbiddenError("You do not have permissions or rights"));
       return;
+    }
+
+    if (withBody) {
+      const body = req.body as UpdateTaskBody;
+
+      if (body.assignedTo) {
+        next(new ForbiddenError("You do not have permissions or rights"));
+        return;
+      }
     }
 
     next();
@@ -123,7 +127,6 @@ export function createTaskActionGuard({
       next(new NotFoundError("Workspace member"));
       return;
     }
-
     if (["owner", "admin"].includes(creator.role)) {
       next();
       return;
