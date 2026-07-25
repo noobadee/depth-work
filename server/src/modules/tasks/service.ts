@@ -124,7 +124,15 @@ export class TaskService implements ITaskService {
       }
     }
 
-    const updatedTask = await this.repo.update(id, body);
+    let updatedTask;
+    if (body.status === "completed") {
+      updatedTask = await this.repo.update(id, {
+        ...body,
+        completed_at: new Date(),
+      });
+    } else {
+      updatedTask = await this.repo.update(id, body);
+    }
 
     if (!updatedTask) {
       throw new DatabaseError(

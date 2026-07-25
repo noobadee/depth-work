@@ -9,7 +9,9 @@ import type { ProjectIdParam } from "@/modules/projects/schemas.ts";
 import type { TaskIdParam, UpdateTaskBody } from "@/modules/tasks/schemas.ts";
 import type { WorkspaceIdParam } from "@/modules/workspaces/schemas.ts";
 
-export function taskActionGuard({ withBody = false }: { withBody?: boolean } = {}): RequestHandler {
+export function taskActionGuard({
+  withBody = false,
+}: { withBody?: boolean } = {}): RequestHandler {
   return async (req, _res, next) => {
     const user = requireUser(req);
     const workspaceMemberRepo = new WorkspaceMemberRepository();
