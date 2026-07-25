@@ -4,6 +4,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@/common/errors/index.ts";
+import { FocusSessionRepository } from "@/modules/focus-sessions/repository.ts";
 import type { FocusSessionTask } from "@/db/schema/index.ts";
 import type {
   CreateFocusSessionTask,
@@ -38,6 +39,13 @@ export class FocusSessionTaskService implements IFocusSessionTaskService {
       throw new ConflictError("Focus session task already exists");
     }
 
+    const focusSessionRepo = new FocusSessionRepository();
+    const focusSession = await focusSessionRepo.findById(focusId);
+
+    if (!focusSession) {
+      throw new NotFoundError("Focus session");
+    }
+
     const newFocusSessionTask = await this.repo.create({ ...body, focusId });
 
     if (!newFocusSessionTask) {
@@ -58,11 +66,16 @@ export class FocusSessionTaskService implements IFocusSessionTaskService {
       throw new ValidationError("The body cannot be empty");
     }
 
-    const updatedFocusSessionTask = await this.repo.update(
-      focusId,
-      taskId,
-      body,
-    );
+    const focusSessionRepo = new FocusSessionRepository();
+    const focusSession = await focusSessionRepo.findById(focusId);
+
+    if (!focusSession) {
+      throw new NotFoundError("Focus session");
+    }
+
+    const updatedFocusSessionTask = await this.repo.update(focusId, taskId, {
+      completed_in_session: body.completedInSession,
+    });
 
     if (!updatedFocusSessionTask) {
       throw new DatabaseError(

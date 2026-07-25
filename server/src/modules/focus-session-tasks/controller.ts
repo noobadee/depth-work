@@ -1,4 +1,3 @@
-import { requireUser } from "@/middleware/auth.middleware.ts";
 import { sendSuccess } from "@/utils/response.ts";
 import type { Request, Response } from "express";
 import type { IFocusSessionTaskService } from "@/modules/focus-session-tasks/types.ts";

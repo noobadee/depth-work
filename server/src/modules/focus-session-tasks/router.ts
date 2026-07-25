@@ -10,6 +10,7 @@ import {
 import { focusSessionIdParamSchema } from "@/modules/focus-sessions/schemas.ts";
 import { validate } from "@/common/middleware/validate.ts";
 import { requireAuth } from "@/middleware/auth.middleware.ts";
+import { focusSessionTaskGuard } from "@/middleware/focus-session-task.middleware.ts";
 
 const router = express.Router({ mergeParams: true });
 
@@ -31,6 +32,7 @@ router.post(
     body: createFocusSessionTaskSchema,
     params: focusSessionIdParamSchema,
   }),
+  focusSessionTaskGuard(),
   controller.create,
 );
 
@@ -40,12 +42,14 @@ router.patch(
     body: updateFocusSessionTaskSchema,
     params: focusSessionTaskParamsSchema,
   }),
+  focusSessionTaskGuard({ withTaskIdParam: true }),
   controller.update,
 );
 
 router.delete(
   "/:task_id",
   validate({ params: focusSessionTaskParamsSchema }),
+  focusSessionTaskGuard({ withTaskIdParam: true }),
   controller.delete,
 );
 
