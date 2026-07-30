@@ -89,7 +89,6 @@ export const auth = betterAuth({
   },
 
   // ──── Email verification ────────────────────────────────────────────────────────────────────────────
-
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
