@@ -8,8 +8,8 @@ export {
 import {
   workspaceMemberResponseSchema,
   type WorkspaceMember,
-} from "@/entities/workspace-member/index";
-import { httpClient, parseOrThrow } from "@/shared/api/index";
+} from "@/entities/workspace-member";
+import { httpClient, parseOrThrow } from "@/shared/api";
 
 async function fetchWorkspaceMembers(
   workspaceId: string,

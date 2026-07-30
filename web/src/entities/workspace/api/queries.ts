@@ -5,7 +5,7 @@ import {
   fetchWorkspace,
   fetchWorkspaces,
   workspaceKeys,
-} from "@/entities/workspace/index";
+} from "@/entities/workspace";
 
 function workspacesQueryOptions() {
   return queryOptions({

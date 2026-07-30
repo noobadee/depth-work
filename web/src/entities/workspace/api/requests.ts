@@ -7,11 +7,8 @@ export {
 };
 export type { CreateWorkspaceInput, UpdateWorkspaceInput };
 
-import {
-  workspaceResponseSchema,
-  type Workspace,
-} from "@/entities/workspace/model/schema";
-import { httpClient, parseOrThrow } from "@/shared/api/index";
+import { workspaceResponseSchema, type Workspace } from "@/entities/workspace";
+import { httpClient, parseOrThrow } from "@/shared/api";
 
 async function fetchWorkspaces(): Promise<Workspace> {
   const raw = await httpClient.get<unknown>("/workspaces");
