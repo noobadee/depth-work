@@ -18,8 +18,8 @@ export class WorkspaceService implements IWorkspaceService {
   async getWorkspaces(ownerId: string): Promise<Workspace[]> {
     const workspaces = await this.repo.findAllByOwner(ownerId);
 
-    if (!workspaces || workspaces.length === 0) {
-      throw new NotFoundError("Workspace");
+    if (!workspaces) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return workspaces;

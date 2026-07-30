@@ -18,8 +18,8 @@ export class ProjectService implements IProjectService {
   async getProjects(workspaceId: string): Promise<Project[]> {
     const projects = await this.repo.findAllByWorkspace(workspaceId);
 
-    if (!projects || projects.length === 0) {
-      throw new NotFoundError("Project");
+    if (!projects) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return projects;

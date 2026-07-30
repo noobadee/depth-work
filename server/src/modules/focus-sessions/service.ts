@@ -20,8 +20,8 @@ export class FocusSessionService implements IFocusSessionService {
   async getFocusSessions(userId: string): Promise<FocusSession[]> {
     const focusSessions = await this.repo.findAllByOwner(userId);
 
-    if (!focusSessions || focusSessions.length === 0) {
-      throw new NotFoundError("Focus session");
+    if (!focusSessions) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return focusSessions;

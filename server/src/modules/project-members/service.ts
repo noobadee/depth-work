@@ -17,8 +17,8 @@ export class ProjectMemberService implements IProjectMemberService {
   async getProjectMembers(projectId: string): Promise<ProjectMember[]> {
     const projectMembers = await this.repo.findAllByProject(projectId);
 
-    if (!projectMembers || projectMembers.length === 0) {
-      throw new NotFoundError("Project member");
+    if (!projectMembers) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return projectMembers;

@@ -19,8 +19,8 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
   async getWorkspaceMembers(workspaceId: string): Promise<WorkspaceMember[]> {
     const workspaceMembers = await this.repo.findAllByWorkspace(workspaceId);
 
-    if (!workspaceMembers || workspaceMembers.length === 0) {
-      throw new NotFoundError("Workspace members");
+    if (!workspaceMembers) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return workspaceMembers;

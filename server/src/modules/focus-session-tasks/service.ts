@@ -19,8 +19,8 @@ export class FocusSessionTaskService implements IFocusSessionTaskService {
   async getFocusSessionTasks(focusId: string): Promise<FocusSessionTask[]> {
     const focusSessionTasks = await this.repo.findAllBySession(focusId);
 
-    if (!focusSessionTasks || focusSessionTasks.length === 0) {
-      throw new NotFoundError("Focus session task");
+    if (!focusSessionTasks) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return focusSessionTasks;

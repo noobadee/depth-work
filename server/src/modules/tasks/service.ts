@@ -20,8 +20,8 @@ export class TaskService implements ITaskService {
   async getTasks(workspaceId: string): Promise<Task[] | null> {
     const tasks = await this.repo.findAllByWorkspace(workspaceId);
 
-    if (!tasks || tasks.length === 0) {
-      throw new NotFoundError("Task");
+    if (!tasks) {
+      throw new DatabaseError("Unexpected database operation failed");
     }
 
     return tasks;
