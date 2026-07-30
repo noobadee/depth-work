@@ -8,19 +8,19 @@ export {
 export type { CreateWorkspaceInput, UpdateWorkspaceInput };
 
 import {
-  workspaceListSchema,
+  workspaceResponseSchema,
   type Workspace,
 } from "@/entities/workspace/model/schema";
 import { httpClient, parseOrThrow } from "@/shared/api/index";
 
 async function fetchWorkspaces(): Promise<Workspace> {
   const raw = await httpClient.get<unknown>("/workspaces");
-  return parseOrThrow(workspaceListSchema, raw);
+  return parseOrThrow(workspaceResponseSchema, raw);
 }
 
 async function fetchWorkspace(workspaceId: string): Promise<Workspace> {
   const raw = await httpClient.get<unknown>(`/workspaces/${workspaceId}`);
-  return parseOrThrow(workspaceListSchema, raw);
+  return parseOrThrow(workspaceResponseSchema, raw);
 }
 
 interface CreateWorkspaceInput {
@@ -32,22 +32,23 @@ async function createWorkspace(
   input: CreateWorkspaceInput,
 ): Promise<Workspace> {
   const raw = await httpClient.post<unknown>("/workspaces", input);
-  return parseOrThrow(workspaceListSchema, raw);
+  return parseOrThrow(workspaceResponseSchema, raw);
 }
 
 interface UpdateWorkspaceInput {
+  workspaceId: string;
   name: string;
 }
 
-async function updateWorkspace(
-  workspaceId: string,
-  input: UpdateWorkspaceInput,
-): Promise<Workspace> {
+async function updateWorkspace({
+  workspaceId,
+  ...input
+}: UpdateWorkspaceInput): Promise<Workspace> {
   const raw = await httpClient.patch<unknown>(
     `/workspaces/${workspaceId}`,
     input,
   );
-  return parseOrThrow(workspaceListSchema, raw);
+  return parseOrThrow(workspaceResponseSchema, raw);
 }
 
 async function deleteWorkspace(workspaceId: string): Promise<void> {

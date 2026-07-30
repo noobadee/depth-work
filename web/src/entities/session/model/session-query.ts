@@ -5,7 +5,7 @@ export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
   queryFn: async () => {
     const { data } = await authClient.getSession();
-    return data; // { user, session  } | null
+    return data;
   },
   staleTime: 5 * 60 * 1000,
 });

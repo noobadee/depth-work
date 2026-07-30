@@ -1,6 +1,6 @@
 export {
   workspaceSchema,
-  workspaceListSchema,
+  workspaceResponseSchema,
   type Workspace,
 } from "@/entities/workspace/model/schema";
 export {

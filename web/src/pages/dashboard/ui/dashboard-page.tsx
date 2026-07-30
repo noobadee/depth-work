@@ -2,17 +2,21 @@ import { useSession, signOut } from "@/shared/api/auth-client.ts";
 import { useQuery } from "@tanstack/react-query";
 import { workspacesQueryOptions } from "@/entities/workspace";
 
-export default function DashboardPage() {
-  const { data: session, isPending, error } = useSession();
-  const { data: workspaces, isLoading } = useQuery(workspacesQueryOptions());
+export function DashboardPage() {
+  const { data: session, isPending: isSessionPending, error } = useSession();
+  const { data: workspaces, isLoading: isWorkspacesLoading } = useQuery(
+    workspacesQueryOptions(),
+  );
 
-  if (isPending && isLoading) {
+  if (isSessionPending && isWorkspacesLoading) {
     return <div>Loading...</div>;
   }
 
   if (!session || error) {
     return <div>Not authenticated</div>;
   }
+
+  const { id, email, name, image } = session.user;
 
   const handleSignOut = async () => {
     await signOut({
@@ -30,11 +34,9 @@ export default function DashboardPage() {
   return (
     <div>
       <h2>Dashboard</h2>
-      <p>Welcome, {session.user.name}</p>
-      <p>{session.user.email}</p>
-      {session.user.image && (
-        <img src="user.image" alt="Profile" width={48} height={48} />
-      )}
+      <p>Welcome, {name}</p>
+      <p>{email}</p>
+      {image && <img src="user.image" alt="Profile" width={48} height={48} />}
       <button onClick={handleSignOut}>Sign out</button>
 
       <h3>Workspaces</h3>
