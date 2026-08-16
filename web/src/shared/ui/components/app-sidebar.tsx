@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/ui/kit/sidebar";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ChevronDown,
   ClipboardList,
@@ -23,6 +23,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/kit/dropdown-menu";
+import { useSession } from "@/shared/api/auth-client";
+import { useQuery } from "@tanstack/react-query";
+import { workspacesQueryOptions } from "@/entities/workspace";
+import { useState } from "react";
 
 const items = [
   { title: "Home", url: "/", icon: House },
@@ -32,6 +36,45 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const navigate = useNavigate();
+
+  const {
+    data: sessionData,
+    isPending: isSessionDataPending,
+    error: sessionDataError,
+  } = useSession();
+
+  const {
+    data: workspacesResult,
+    isLoading: isWorkspacesLoading,
+    error: workspacesError,
+  } = useQuery(workspacesQueryOptions());
+
+  const workspaces = workspacesResult?.data ?? [];
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
+    null,
+  );
+  const currentWorkspace =
+    workspaces.find((w) => w.workspace_id === selectedWorkspaceId) ??
+    workspaces?.[0];
+
+  if (isSessionDataPending || isWorkspacesLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!sessionData || sessionDataError) {
+    return <div>Not authenticated</div>;
+  }
+
+  if (workspacesError) {
+    return <div>Unexpected error loading workspaces data</div>;
+  }
+
+  if (workspaces.length === 0) {
+    navigate({ to: "/onboarding" });
+    return;
+  }
+
   return (
     <Sidebar collapsible="icon" className="pt-2">
       <SidebarHeader>
@@ -50,14 +93,22 @@ export function AppSidebar() {
                 <SidebarMenuButton>
                   <User />
                   <span className="group-data-[collapsible=icon]:hidden">
-                    Select Workspace
+                    {currentWorkspace.name}
                   </span>{" "}
-                  <ChevronDown />
+                  <ChevronDown className="group-data-[collapsible=icon]:hidden" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-full">
-                <DropdownMenuItem>Workspace 1</DropdownMenuItem>
-                <DropdownMenuItem>Workspace 2</DropdownMenuItem>
+                {workspaces.map((workspace) => (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setSelectedWorkspaceId(workspace.workspace_id)
+                    }
+                    key={workspace.workspace_id}
+                  >
+                    {workspace.name}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

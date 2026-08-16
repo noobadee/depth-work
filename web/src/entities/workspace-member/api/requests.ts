@@ -1,5 +1,6 @@
 export {
   fetchWorkspaceMembers,
+  fetchWorkspaceMembersByOwner,
   createWorkspaceMember,
   updateWorkspaceMember,
   deleteWorkspaceMember,
@@ -17,6 +18,13 @@ async function fetchWorkspaceMembers(
   const raw = await httpClient.get<unknown>(
     `/workspaces/${workspaceId}/members`,
   );
+  return parseOrThrow(workspaceMemberResponseSchema, raw);
+}
+
+async function fetchWorkspaceMembersByOwner(
+  userId: string,
+): Promise<WorkspaceMember> {
+  const raw = await httpClient.get<unknown>(`/workspaces/members/${userId}`);
   return parseOrThrow(workspaceMemberResponseSchema, raw);
 }
 

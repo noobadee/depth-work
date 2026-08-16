@@ -9,17 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
-import { Route as PublicOnboardingRouteImport } from './routes/_public/onboarding'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/focus'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -36,11 +41,6 @@ const IndexRoute = IndexRouteImport.update({
 const PublicRegisterRoute = PublicRegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => PublicRouteRoute,
-} as any)
-const PublicOnboardingRoute = PublicOnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
   getParentRoute: () => PublicRouteRoute,
 } as any)
 const PublicLoginRoute = PublicLoginRouteImport.update({
@@ -71,22 +71,22 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/onboarding': typeof OnboardingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/login': typeof PublicLoginRoute
-  '/onboarding': typeof PublicOnboardingRoute
   '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/onboarding': typeof OnboardingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/login': typeof PublicLoginRoute
-  '/onboarding': typeof PublicOnboardingRoute
   '/register': typeof PublicRegisterRoute
 }
 export interface FileRoutesById {
@@ -94,46 +94,46 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public': typeof PublicRouteRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/focus': typeof AuthenticatedFocusRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_public/login': typeof PublicLoginRoute
-  '/_public/onboarding': typeof PublicOnboardingRoute
   '/_public/register': typeof PublicRegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/onboarding'
     | '/dashboard'
     | '/focus'
     | '/projects'
     | '/tasks'
     | '/login'
-    | '/onboarding'
     | '/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/onboarding'
     | '/dashboard'
     | '/focus'
     | '/projects'
     | '/tasks'
     | '/login'
-    | '/onboarding'
     | '/register'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_public'
+    | '/onboarding'
     | '/_authenticated/dashboard'
     | '/_authenticated/focus'
     | '/_authenticated/projects'
     | '/_authenticated/tasks'
     | '/_public/login'
-    | '/_public/onboarding'
     | '/_public/register'
   fileRoutesById: FileRoutesById
 }
@@ -141,10 +141,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
+  OnboardingRoute: typeof OnboardingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -171,13 +179,6 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof PublicRegisterRouteImport
-      parentRoute: typeof PublicRouteRoute
-    }
-    '/_public/onboarding': {
-      id: '/_public/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof PublicOnboardingRouteImport
       parentRoute: typeof PublicRouteRoute
     }
     '/_public/login': {
@@ -237,13 +238,11 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface PublicRouteRouteChildren {
   PublicLoginRoute: typeof PublicLoginRoute
-  PublicOnboardingRoute: typeof PublicOnboardingRoute
   PublicRegisterRoute: typeof PublicRegisterRoute
 }
 
 const PublicRouteRouteChildren: PublicRouteRouteChildren = {
   PublicLoginRoute: PublicLoginRoute,
-  PublicOnboardingRoute: PublicOnboardingRoute,
   PublicRegisterRoute: PublicRegisterRoute,
 }
 
@@ -255,6 +254,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
+  OnboardingRoute: OnboardingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
