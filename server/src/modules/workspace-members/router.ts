@@ -7,6 +7,7 @@ import {
   createWorkspaceMemberSchema,
   updateWorkspaceMemberSchema,
   memberParamsSchema,
+  userIdParamSchema,
 } from "@/modules/workspace-members/schemas.ts";
 import { validate } from "@/common/middleware/validate.ts";
 import { requireAuth } from "@/middleware/auth.middleware.ts";
@@ -21,9 +22,15 @@ const controller = new WorkspaceMemberController(service);
 router.use(requireAuth);
 
 router.get(
-  "/",
+  "/:workspace_id/members",
   validate({ params: workspaceIdParamSchema }),
   controller.getAll,
+);
+
+router.get(
+  "/members/:user_id",
+  validate({ params: userIdParamSchema }),
+  controller.getAllByUserId,
 );
 
 // router.get(
@@ -33,7 +40,7 @@ router.get(
 // );
 
 router.post(
-  "/",
+  "/:workspace_id/members",
   validate({
     body: createWorkspaceMemberSchema,
     params: workspaceIdParamSchema,
@@ -43,7 +50,7 @@ router.post(
 );
 
 router.patch(
-  "/:user_id",
+  "/:workspace_id/members/:user_id",
   validate({
     body: updateWorkspaceMemberSchema,
     params: memberParamsSchema,
@@ -53,7 +60,7 @@ router.patch(
 );
 
 router.delete(
-  "/:user_id",
+  "/:workspace_id/members/:user_id",
   validate({ params: memberParamsSchema }),
   requireRole(["owner", "admin"], { withUserIdParam: true }),
   controller.delete,

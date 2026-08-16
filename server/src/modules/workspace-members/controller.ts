@@ -4,6 +4,7 @@ import type { IWorkspaceMemberService } from "@/modules/workspace-members/types.
 import type {
   CreateWorkspaceMemberBody,
   UpdateWorkspaceMemberBody,
+  UserIdParam,
   WorkspaceMemberParams,
 } from "@/modules/workspace-members/schemas.ts";
 import type { WorkspaceIdParam } from "@/modules/workspaces/schemas.ts";
@@ -19,6 +20,17 @@ export class WorkspaceMemberController {
       res,
       data: workspaceMembers,
       message: "Successfully fetched all workspace members",
+    });
+  };
+
+  getAllByUserId = async (req: Request, res: Response) => {
+    const { user_id } = req.params as UserIdParam;
+    const workspaceMembers =
+      await this.service.getWorkspaceMembersByOwner(user_id);
+    sendSuccess({
+      res,
+      data: workspaceMembers,
+      message: "Successfully fetched all owned workspace members",
     });
   };
 

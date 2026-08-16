@@ -14,6 +14,10 @@ export const memberParamsSchema = z.object({
   workspace_id: z.uuid("Invalid workspace ID"),
 });
 
+export const userIdParamSchema = z.object({
+  user_id: z.string().min(1, "User ID is required"),
+});
+
 export type CreateWorkspaceMemberBody = z.infer<
   typeof createWorkspaceMemberSchema
 >;
@@ -23,3 +27,5 @@ export type UpdateWorkspaceMemberBody = z.infer<
 >;
 
 export type WorkspaceMemberParams = z.infer<typeof memberParamsSchema>;
+
+export type UserIdParam = z.infer<typeof userIdParamSchema>;

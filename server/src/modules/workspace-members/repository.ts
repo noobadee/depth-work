@@ -16,6 +16,14 @@ export class WorkspaceMemberRepository implements IWorkspaceMemberRepository {
     return result ?? null;
   }
 
+  async findAllByOwner(userId: string): Promise<WorkspaceMember[] | null> {
+    const result = await db
+      .select()
+      .from(workspaceMembers)
+      .where(eq(workspaceMembers.userId, userId));
+    return result ?? null;
+  }
+
   async findByOwner(
     userId: string,
     workspaceId: string,

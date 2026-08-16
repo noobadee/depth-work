@@ -26,6 +26,16 @@ export class WorkspaceMemberService implements IWorkspaceMemberService {
     return workspaceMembers;
   }
 
+  async getWorkspaceMembersByOwner(userId: string): Promise<WorkspaceMember[]> {
+    const workspaceMembers = await this.repo.findAllByOwner(userId);
+
+    if (!workspaceMembers) {
+      throw new DatabaseError("Unexpected database operation failed");
+    }
+
+    return workspaceMembers;
+  }
+
   async getWorkspaceMember(
     id: string,
     workspaceId: string,

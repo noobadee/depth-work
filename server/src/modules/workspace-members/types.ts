@@ -2,6 +2,7 @@ import type { NewWorkspaceMember, WorkspaceMember } from "@/db/schema/index.ts";
 
 export interface IWorkspaceMemberRepository {
   findAllByWorkspace(workspaceId: string): Promise<WorkspaceMember[] | null>;
+  findAllByOwner(userId: string): Promise<WorkspaceMember[] | null>;
   findByOwner(
     userId: string,
     workspaceId: string,
@@ -17,6 +18,7 @@ export interface IWorkspaceMemberRepository {
 
 export interface IWorkspaceMemberService {
   getWorkspaceMembers(workspaceId: string): Promise<WorkspaceMember[]>;
+  getWorkspaceMembersByOwner(userId: string): Promise<WorkspaceMember[]>;
   getWorkspaceMember(id: string, workspaceId: string): Promise<WorkspaceMember>;
   createWorkspaceMember(
     workspaceId: string,

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { db } from "@/db/index.ts";
 import { workspaces } from "@/db/schema/index.ts";
 import type { NewWorkspace, Workspace } from "@/db/schema/index.ts";
@@ -11,6 +11,14 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       .from(workspaces)
       .where(eq(workspaces.ownerId, ownerId))
       .orderBy(workspaces.created_at);
+    return result ?? null;
+  }
+
+  async findAllByIds(ids: string[]): Promise<Workspace[] | null> {
+    const result = await db
+      .select()
+      .from(workspaces)
+      .where(inArray(workspaces.workspace_id, ids));
     return result ?? null;
   }
 

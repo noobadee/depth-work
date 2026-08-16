@@ -2,6 +2,7 @@ import type { NewWorkspace, Workspace } from "@/db/schema/index.ts";
 
 export interface IWorkspaceRepository {
   findAllByOwner(ownerId: string): Promise<Workspace[] | null>;
+  findAllByIds(ids: string[]): Promise<Workspace[] | null>;
   findById(id: string): Promise<Workspace | null>;
   findByName(name: string): Promise<Workspace | null>;
   create(data: NewWorkspace): Promise<Workspace | null>;

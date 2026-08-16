@@ -57,7 +57,7 @@ function createApp() {
   // ──── FEATURE ROUTES ────────────────────────────────────────────────────────────────────────────
 
   app.use("/api/workspaces", workspacesRouter);
-  app.use("/api/workspaces/:workspace_id/members", workspaceMembersRouter);
+  app.use("/api/workspaces", workspaceMembersRouter);
   app.use("/api", projectsRouter);
   app.use("/api/projects", projectMembersRouter);
   app.use("/api", tasksRouter);

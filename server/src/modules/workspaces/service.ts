@@ -11,12 +11,21 @@ import type {
   IWorkspaceService,
   UpdateWorkspaceInput,
 } from "@/modules/workspaces/types.ts";
+import { WorkspaceMemberRepository } from "@/modules/workspace-members/repository.ts";
 
 export class WorkspaceService implements IWorkspaceService {
   constructor(private readonly repo: IWorkspaceRepository) {}
 
   async getWorkspaces(ownerId: string): Promise<Workspace[]> {
-    const workspaces = await this.repo.findAllByOwner(ownerId);
+    const workspaceMembersRepo = new WorkspaceMemberRepository();
+    const workspaceMembers = await workspaceMembersRepo.findAllByOwner(ownerId);
+
+    if (!workspaceMembers) {
+      throw new DatabaseError("Unexpected database operation failed");
+    }
+
+    const workspaceIds = workspaceMembers.map((wM) => wM.workspaceId);
+    const workspaces = await this.repo.findAllByIds(workspaceIds);
 
     if (!workspaces) {
       throw new DatabaseError("Unexpected database operation failed");
