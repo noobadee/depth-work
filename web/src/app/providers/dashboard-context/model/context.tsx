@@ -1,7 +1,7 @@
 import { createContext, use, type ReactNode } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { workspaceQueryOptions } from "@/entities/workspace";
 import { sessionQueryOptions } from "@/entities/session";
+import { workspaceQueryOptions } from "@/entities/workspace";
 import { projectsQueryOptions } from "@/entities/project";
 import { tasksQueryOptions } from "@/entities/task";
 
@@ -17,9 +17,23 @@ interface Stats {
   overDue: number;
 }
 
+interface Project {
+  project_id: string;
+  title: string;
+  description: string | null;
+}
+
+interface Task {
+  task_id: string;
+  title: string;
+  description: string | null;
+}
+
 interface DashboardContextValue {
   user: User;
   stats: Stats;
+  projects: Project[];
+  tasks: Task[];
   workspaceName: string;
 }
 
@@ -40,8 +54,8 @@ export function DashboardContextProvider({
   );
 
   const { id: userId = "", name: userName = "" } = sessionData?.user ?? {};
-  const projects = projectsResult.data;
-  const tasks = tasksResult.data;
+  const projectList = projectsResult.data;
+  const taskList = tasksResult.data;
 
   const user: User = {
     id: userId,
@@ -49,18 +63,33 @@ export function DashboardContextProvider({
   };
 
   const stats: Stats = {
-    totalProjects: projects.length,
-    completedProjects: projects.filter((p) => p.status === "completed").length,
-    myTasks: tasks.filter(
+    totalProjects: projectList.length,
+    completedProjects: projectList.filter((p) => p.status === "completed")
+      .length,
+    myTasks: taskList.filter(
       (t) => t.createdBy === userId || t.assignedTo === userId,
     ).length,
     overDue: 0,
   };
 
+  const projects: Project[] = projectList.map(
+    ({ project_id, title, description }) => ({
+      project_id,
+      title,
+      description,
+    }),
+  );
+
+  const tasks: Task[] = taskList.map(({ task_id, title, description }) => ({
+    task_id,
+    title,
+    description,
+  }));
+
   const workspaceName = workspace.name;
 
   return (
-    <DashboardContext value={{ user, stats, workspaceName }}>
+    <DashboardContext value={{ user, stats, projects, tasks, workspaceName }}>
       {children}
     </DashboardContext>
   );
