@@ -21,7 +21,7 @@ export function OnboardingPage() {
   }
 
   if (workspacesResult?.data.length !== 0) {
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/$workspaceId/dashboard" });
     return;
   }
 

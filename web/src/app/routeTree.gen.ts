@@ -12,13 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as PublicRegisterRouteImport } from './routes/_public/register'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
-import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
-import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
-import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/focus'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedWorkspaceIdRouteRouteImport } from './routes/_authenticated/$workspaceId/route'
+import { Route as AuthenticatedWorkspaceIdTasksRouteImport } from './routes/_authenticated/$workspaceId/tasks'
+import { Route as AuthenticatedWorkspaceIdProjectsRouteImport } from './routes/_authenticated/$workspaceId/projects'
+import { Route as AuthenticatedWorkspaceIdFocusRouteImport } from './routes/_authenticated/$workspaceId/focus'
+import { Route as AuthenticatedWorkspaceIdDashboardRouteImport } from './routes/_authenticated/$workspaceId/dashboard'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -33,10 +34,10 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const PublicRegisterRoute = PublicRegisterRouteImport.update({
   id: '/register',
@@ -48,97 +49,112 @@ const PublicLoginRoute = PublicLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => PublicRouteRoute,
 } as any)
-const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
-  id: '/tasks',
-  path: '/tasks',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedFocusRoute = AuthenticatedFocusRouteImport.update({
-  id: '/focus',
-  path: '/focus',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedWorkspaceIdRouteRoute =
+  AuthenticatedWorkspaceIdRouteRouteImport.update({
+    id: '/$workspaceId',
+    path: '/$workspaceId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedWorkspaceIdTasksRoute =
+  AuthenticatedWorkspaceIdTasksRouteImport.update({
+    id: '/tasks',
+    path: '/tasks',
+    getParentRoute: () => AuthenticatedWorkspaceIdRouteRoute,
+  } as any)
+const AuthenticatedWorkspaceIdProjectsRoute =
+  AuthenticatedWorkspaceIdProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedWorkspaceIdRouteRoute,
+  } as any)
+const AuthenticatedWorkspaceIdFocusRoute =
+  AuthenticatedWorkspaceIdFocusRouteImport.update({
+    id: '/focus',
+    path: '/focus',
+    getParentRoute: () => AuthenticatedWorkspaceIdRouteRoute,
+  } as any)
+const AuthenticatedWorkspaceIdDashboardRoute =
+  AuthenticatedWorkspaceIdDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedWorkspaceIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AuthenticatedIndexRoute
   '/onboarding': typeof OnboardingRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/focus': typeof AuthenticatedFocusRoute
-  '/projects': typeof AuthenticatedProjectsRoute
-  '/tasks': typeof AuthenticatedTasksRoute
+  '/$workspaceId': typeof AuthenticatedWorkspaceIdRouteRouteWithChildren
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
+  '/$workspaceId/dashboard': typeof AuthenticatedWorkspaceIdDashboardRoute
+  '/$workspaceId/focus': typeof AuthenticatedWorkspaceIdFocusRoute
+  '/$workspaceId/projects': typeof AuthenticatedWorkspaceIdProjectsRoute
+  '/$workspaceId/tasks': typeof AuthenticatedWorkspaceIdTasksRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof AuthenticatedIndexRoute
   '/onboarding': typeof OnboardingRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/focus': typeof AuthenticatedFocusRoute
-  '/projects': typeof AuthenticatedProjectsRoute
-  '/tasks': typeof AuthenticatedTasksRoute
+  '/$workspaceId': typeof AuthenticatedWorkspaceIdRouteRouteWithChildren
   '/login': typeof PublicLoginRoute
   '/register': typeof PublicRegisterRoute
+  '/$workspaceId/dashboard': typeof AuthenticatedWorkspaceIdDashboardRoute
+  '/$workspaceId/focus': typeof AuthenticatedWorkspaceIdFocusRoute
+  '/$workspaceId/projects': typeof AuthenticatedWorkspaceIdProjectsRoute
+  '/$workspaceId/tasks': typeof AuthenticatedWorkspaceIdTasksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public': typeof PublicRouteRouteWithChildren
   '/onboarding': typeof OnboardingRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/focus': typeof AuthenticatedFocusRoute
-  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
-  '/_authenticated/tasks': typeof AuthenticatedTasksRoute
+  '/_authenticated/$workspaceId': typeof AuthenticatedWorkspaceIdRouteRouteWithChildren
   '/_public/login': typeof PublicLoginRoute
   '/_public/register': typeof PublicRegisterRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/$workspaceId/dashboard': typeof AuthenticatedWorkspaceIdDashboardRoute
+  '/_authenticated/$workspaceId/focus': typeof AuthenticatedWorkspaceIdFocusRoute
+  '/_authenticated/$workspaceId/projects': typeof AuthenticatedWorkspaceIdProjectsRoute
+  '/_authenticated/$workspaceId/tasks': typeof AuthenticatedWorkspaceIdTasksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/onboarding'
-    | '/dashboard'
-    | '/focus'
-    | '/projects'
-    | '/tasks'
+    | '/$workspaceId'
     | '/login'
     | '/register'
+    | '/$workspaceId/dashboard'
+    | '/$workspaceId/focus'
+    | '/$workspaceId/projects'
+    | '/$workspaceId/tasks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/onboarding'
-    | '/dashboard'
-    | '/focus'
-    | '/projects'
-    | '/tasks'
+    | '/$workspaceId'
     | '/login'
     | '/register'
+    | '/$workspaceId/dashboard'
+    | '/$workspaceId/focus'
+    | '/$workspaceId/projects'
+    | '/$workspaceId/tasks'
   id:
     | '__root__'
-    | '/'
     | '/_authenticated'
     | '/_public'
     | '/onboarding'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/focus'
-    | '/_authenticated/projects'
-    | '/_authenticated/tasks'
+    | '/_authenticated/$workspaceId'
     | '/_public/login'
     | '/_public/register'
+    | '/_authenticated/'
+    | '/_authenticated/$workspaceId/dashboard'
+    | '/_authenticated/$workspaceId/focus'
+    | '/_authenticated/$workspaceId/projects'
+    | '/_authenticated/$workspaceId/tasks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
@@ -167,12 +183,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_public/register': {
       id: '/_public/register'
@@ -188,49 +204,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLoginRouteImport
       parentRoute: typeof PublicRouteRoute
     }
-    '/_authenticated/tasks': {
-      id: '/_authenticated/tasks'
+    '/_authenticated/$workspaceId': {
+      id: '/_authenticated/$workspaceId'
+      path: '/$workspaceId'
+      fullPath: '/$workspaceId'
+      preLoaderRoute: typeof AuthenticatedWorkspaceIdRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/$workspaceId/tasks': {
+      id: '/_authenticated/$workspaceId/tasks'
       path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof AuthenticatedTasksRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$workspaceId/tasks'
+      preLoaderRoute: typeof AuthenticatedWorkspaceIdTasksRouteImport
+      parentRoute: typeof AuthenticatedWorkspaceIdRouteRoute
     }
-    '/_authenticated/projects': {
-      id: '/_authenticated/projects'
+    '/_authenticated/$workspaceId/projects': {
+      id: '/_authenticated/$workspaceId/projects'
       path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof AuthenticatedProjectsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$workspaceId/projects'
+      preLoaderRoute: typeof AuthenticatedWorkspaceIdProjectsRouteImport
+      parentRoute: typeof AuthenticatedWorkspaceIdRouteRoute
     }
-    '/_authenticated/focus': {
-      id: '/_authenticated/focus'
+    '/_authenticated/$workspaceId/focus': {
+      id: '/_authenticated/$workspaceId/focus'
       path: '/focus'
-      fullPath: '/focus'
-      preLoaderRoute: typeof AuthenticatedFocusRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$workspaceId/focus'
+      preLoaderRoute: typeof AuthenticatedWorkspaceIdFocusRouteImport
+      parentRoute: typeof AuthenticatedWorkspaceIdRouteRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
+    '/_authenticated/$workspaceId/dashboard': {
+      id: '/_authenticated/$workspaceId/dashboard'
       path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$workspaceId/dashboard'
+      preLoaderRoute: typeof AuthenticatedWorkspaceIdDashboardRouteImport
+      parentRoute: typeof AuthenticatedWorkspaceIdRouteRoute
     }
   }
 }
 
+interface AuthenticatedWorkspaceIdRouteRouteChildren {
+  AuthenticatedWorkspaceIdDashboardRoute: typeof AuthenticatedWorkspaceIdDashboardRoute
+  AuthenticatedWorkspaceIdFocusRoute: typeof AuthenticatedWorkspaceIdFocusRoute
+  AuthenticatedWorkspaceIdProjectsRoute: typeof AuthenticatedWorkspaceIdProjectsRoute
+  AuthenticatedWorkspaceIdTasksRoute: typeof AuthenticatedWorkspaceIdTasksRoute
+}
+
+const AuthenticatedWorkspaceIdRouteRouteChildren: AuthenticatedWorkspaceIdRouteRouteChildren =
+  {
+    AuthenticatedWorkspaceIdDashboardRoute:
+      AuthenticatedWorkspaceIdDashboardRoute,
+    AuthenticatedWorkspaceIdFocusRoute: AuthenticatedWorkspaceIdFocusRoute,
+    AuthenticatedWorkspaceIdProjectsRoute:
+      AuthenticatedWorkspaceIdProjectsRoute,
+    AuthenticatedWorkspaceIdTasksRoute: AuthenticatedWorkspaceIdTasksRoute,
+  }
+
+const AuthenticatedWorkspaceIdRouteRouteWithChildren =
+  AuthenticatedWorkspaceIdRouteRoute._addFileChildren(
+    AuthenticatedWorkspaceIdRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedFocusRoute: typeof AuthenticatedFocusRoute
-  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
-  AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
+  AuthenticatedWorkspaceIdRouteRoute: typeof AuthenticatedWorkspaceIdRouteRouteWithChildren
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedFocusRoute: AuthenticatedFocusRoute,
-  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
-  AuthenticatedTasksRoute: AuthenticatedTasksRoute,
+  AuthenticatedWorkspaceIdRouteRoute:
+    AuthenticatedWorkspaceIdRouteRouteWithChildren,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -251,7 +293,6 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
   OnboardingRoute: OnboardingRoute,

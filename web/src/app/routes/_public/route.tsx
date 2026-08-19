@@ -4,7 +4,7 @@ export const Route = createFileRoute("/_public")({
   beforeLoad: ({ context, location }) => {
     if (context.session?.user) {
       throw redirect({
-        to: "/dashboard",
+        to: "/",
         search: { redirect: location.href },
       });
     }

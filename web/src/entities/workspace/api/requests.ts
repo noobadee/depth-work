@@ -7,17 +7,30 @@ export {
 };
 export type { CreateWorkspaceInput, UpdateWorkspaceInput };
 
-import { workspaceResponseSchema, type Workspace } from "@/entities/workspace";
+import {
+  workspaceSchema,
+  workspaceResponseSchema,
+  type Workspace,
+  type WorkspaceResponse,
+} from "@/entities/workspace";
 import { httpClient, parseOrThrow } from "@/shared/api";
+import { env } from "@/shared/config/env";
 
-async function fetchWorkspaces(): Promise<Workspace> {
+async function fetchWorkspaces(): Promise<WorkspaceResponse> {
   const raw = await httpClient.get<unknown>("/workspaces");
   return parseOrThrow(workspaceResponseSchema, raw);
 }
 
 async function fetchWorkspace(workspaceId: string): Promise<Workspace> {
   const raw = await httpClient.get<unknown>(`/workspaces/${workspaceId}`);
-  return parseOrThrow(workspaceResponseSchema, raw);
+  const parsed = parseOrThrow(workspaceResponseSchema, raw);
+  const workspace = parsed.data[0];
+
+  if (!workspace) {
+    throw new Error("Workspace not found");
+  }
+
+  return workspace;
 }
 
 interface CreateWorkspaceInput {
@@ -27,7 +40,7 @@ interface CreateWorkspaceInput {
 
 async function createWorkspace(
   input: CreateWorkspaceInput,
-): Promise<Workspace> {
+): Promise<WorkspaceResponse> {
   const raw = await httpClient.post<unknown>("/workspaces", input);
   return parseOrThrow(workspaceResponseSchema, raw);
 }
@@ -40,7 +53,7 @@ interface UpdateWorkspaceInput {
 async function updateWorkspace({
   workspaceId,
   ...input
-}: UpdateWorkspaceInput): Promise<Workspace> {
+}: UpdateWorkspaceInput): Promise<WorkspaceResponse> {
   const raw = await httpClient.patch<unknown>(
     `/workspaces/${workspaceId}`,
     input,

@@ -2,6 +2,7 @@ export {
   workspaceSchema,
   workspaceResponseSchema,
   type Workspace,
+  type WorkspaceResponse,
 } from "@/entities/workspace/model/schema";
 export {
   fetchWorkspace,

@@ -18,4 +18,5 @@ export const workspaceResponseSchema = z.object({
   data: z.array(workspaceSchema),
 });
 
-export type Workspace = z.infer<typeof workspaceResponseSchema>;
+export type Workspace = z.infer<typeof workspaceSchema>;
+export type WorkspaceResponse = z.infer<typeof workspaceResponseSchema>;
