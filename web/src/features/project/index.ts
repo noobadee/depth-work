@@ -7,3 +7,5 @@ export {
   type CreateProjectFormValues,
   type UpdateProjectFormValues,
 } from "@/features/project/model/schema";
+export { CreateProjectFormDialog } from "@/features/project/ui/create-project-form";
+export { SelectStatusControllerField } from "@/features/project/ui/select-status-field";

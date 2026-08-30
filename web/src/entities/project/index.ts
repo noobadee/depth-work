@@ -1,7 +1,10 @@
 export {
   projectSchema,
+  projectsResponseSchema,
   projectResponseSchema,
   type Project,
+  type ProjectsResponse,
+  type ProjectResponse,
 } from "@/entities/project/model/schema";
 export {
   fetchProject,

@@ -17,10 +17,18 @@ export const projectSchema = z.object({
   updated_at: z.iso.datetime(),
 });
 
-export const projectResponseSchema = z.object({
+export const projectsResponseSchema = z.object({
   status: z.string().min(1, "Response status is required"),
   message: z.string().min(1, "Response message is required"),
   data: z.array(projectSchema),
 });
 
-export type Project = z.infer<typeof projectResponseSchema>;
+export const projectResponseSchema = z.object({
+  status: z.string().min(1, "Response status is required"),
+  message: z.string().min(1, "Response message is required"),
+  data: projectSchema,
+});
+
+export type Project = z.infer<typeof projectSchema>;
+export type ProjectsResponse = z.infer<typeof projectsResponseSchema>;
+export type ProjectResponse = z.infer<typeof projectResponseSchema>;

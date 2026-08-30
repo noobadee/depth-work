@@ -9,8 +9,8 @@ export const createProjectSchema = z.object({
   status: z
     .enum(["pending", "in_progress", "completed", "archived"])
     .optional(),
-  startDate: z.date().nullable().optional(),
-  dueDate: z.date().nullable().optional(),
+  startDate: z.iso.datetime().nullable().optional(),
+  dueDate: z.iso.datetime().nullable().optional(),
   position: z.number().int("Project position must be an integer").optional(),
 });
 

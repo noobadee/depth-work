@@ -6,17 +6,23 @@ export {
   deleteProject,
 };
 
-import { projectResponseSchema, type Project } from "@/entities/project";
+import {
+  projectsResponseSchema,
+  projectResponseSchema,
+  type Project,
+  type ProjectsResponse,
+  type ProjectResponse,
+} from "@/entities/project";
 import { httpClient, parseOrThrow } from "@/shared/api";
 
-async function fetchProjects(workspaceId: string): Promise<Project> {
+async function fetchProjects(workspaceId: string): Promise<ProjectsResponse> {
   const raw = await httpClient.get<unknown>(
     `/workspaces/${workspaceId}/projects`,
   );
-  return parseOrThrow(projectResponseSchema, raw);
+  return parseOrThrow(projectsResponseSchema, raw);
 }
 
-async function fetchProject(projectId: string): Promise<Project> {
+async function fetchProject(projectId: string): Promise<ProjectResponse> {
   const raw = await httpClient.get<unknown>(`/projects/${projectId}`);
   return parseOrThrow(projectResponseSchema, raw);
 }
@@ -39,7 +45,11 @@ async function createProject({
     `/workspaces/${workspaceId}/projects`,
     input,
   );
-  return parseOrThrow(projectResponseSchema, raw);
+
+  const parsed = parseOrThrow(projectResponseSchema, raw);
+  const project = parsed.data;
+
+  return project;
 }
 
 interface UpdateProjectInput {
@@ -55,7 +65,7 @@ interface UpdateProjectInput {
 async function updateProject({
   projectId,
   ...input
-}: UpdateProjectInput): Promise<Project> {
+}: UpdateProjectInput): Promise<ProjectResponse> {
   const raw = await httpClient.patch<unknown>(`/projects/${projectId}`, input);
   return parseOrThrow(projectResponseSchema, raw);
 }

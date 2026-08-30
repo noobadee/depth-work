@@ -3,7 +3,7 @@ import {
   ChevronDown,
   ClipboardList,
   Focus,
-  Folder,
+  Folders,
   House,
   User,
 } from "lucide-react";
@@ -34,7 +34,7 @@ import { Button } from "@/shared/ui/kit/button";
 
 const items = [
   { title: "Dashboard", url: "/", icon: House },
-  { title: "Projects", url: "/$workspaceId/projects", icon: Folder },
+  { title: "Projects", url: "/$workspaceId/projects", icon: Folders },
   { title: "Tasks", url: "/$workspaceId/tasks", icon: ClipboardList },
   { title: "Focus", url: "/$workspaceId/focus", icon: Focus },
 ];

@@ -42,6 +42,7 @@ async function createWorkspace(
   input: CreateWorkspaceInput,
 ): Promise<WorkspaceResponse> {
   const raw = await httpClient.post<unknown>("/workspaces", input);
+
   return parseOrThrow(workspaceResponseSchema, raw);
 }
 
