@@ -8,20 +8,27 @@ export {
   deleteTask,
 };
 
-import { tasksResponseSchema, type Task } from "@/entities/task";
+import {
+  tasksResponseSchema,
+  type Task,
+  type TaskResponse,
+} from "@/entities/task";
 import { httpClient, parseOrThrow } from "@/shared/api";
 
-async function fetchTasks(workspaceId: string): Promise<Task> {
+async function fetchTasks(workspaceId: string): Promise<TaskResponse> {
   const raw = await httpClient.get<unknown>(`/workspaces/${workspaceId}/tasks`);
   return parseOrThrow(tasksResponseSchema, raw);
 }
 
-async function fetchProjectTasks(projectId: string): Promise<Task> {
+async function fetchProjectTasks(projectId: string): Promise<Task[]> {
   const raw = await httpClient.get<unknown>(`/projects/${projectId}/tasks`);
-  return parseOrThrow(tasksResponseSchema, raw);
+  const parsed = parseOrThrow(tasksResponseSchema, raw);
+  const tasks = parsed.data;
+
+  return tasks;
 }
 
-async function fetchTask(taskId: string): Promise<Task> {
+async function fetchTask(taskId: string): Promise<TaskResponse> {
   const raw = await httpClient.get<unknown>(`/tasks/${taskId}`);
   return parseOrThrow(tasksResponseSchema, raw);
 }
@@ -40,7 +47,7 @@ export interface CreateTask {
 async function createTask({
   workspaceId,
   ...input
-}: CreateTask): Promise<Task> {
+}: CreateTask): Promise<TaskResponse> {
   const raw = await httpClient.post<unknown>(
     `/workspaces/${workspaceId}/tasks`,
     input,
@@ -62,7 +69,7 @@ export interface CreateProjectTask {
 async function createProjectTask({
   projectId,
   ...input
-}: CreateProjectTask): Promise<Task> {
+}: CreateProjectTask): Promise<TaskResponse> {
   const raw = await httpClient.post<unknown>(
     `/projects/${projectId}/tasks`,
     input,
@@ -81,7 +88,10 @@ export interface UpdateTask {
   position?: number;
 }
 
-async function updateTask({ taskId, ...input }: UpdateTask): Promise<Task> {
+async function updateTask({
+  taskId,
+  ...input
+}: UpdateTask): Promise<TaskResponse> {
   const raw = await httpClient.patch<unknown>(`/tasks/${taskId}`, input);
   return parseOrThrow(tasksResponseSchema, raw);
 }

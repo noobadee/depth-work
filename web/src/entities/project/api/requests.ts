@@ -22,9 +22,12 @@ async function fetchProjects(workspaceId: string): Promise<ProjectsResponse> {
   return parseOrThrow(projectsResponseSchema, raw);
 }
 
-async function fetchProject(projectId: string): Promise<ProjectResponse> {
+async function fetchProject(projectId: string): Promise<Project> {
   const raw = await httpClient.get<unknown>(`/projects/${projectId}`);
-  return parseOrThrow(projectResponseSchema, raw);
+  const parsed = parseOrThrow(projectResponseSchema, raw);
+  const project = parsed.data;
+
+  return project;
 }
 
 interface CreateProjectInput {

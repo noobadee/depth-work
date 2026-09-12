@@ -2,6 +2,7 @@ export {
   tasksSchema,
   tasksResponseSchema,
   type Task,
+  type TaskResponse,
 } from "@/entities/task/model/schema";
 export {
   fetchTasks,

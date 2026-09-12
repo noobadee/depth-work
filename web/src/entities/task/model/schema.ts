@@ -34,4 +34,5 @@ export const tasksResponseSchema = z.object({
   data: z.array(tasksSchema),
 });
 
-export type Task = z.infer<typeof tasksResponseSchema>;
+export type Task = z.infer<typeof tasksSchema>;
+export type TaskResponse = z.infer<typeof tasksResponseSchema>;
