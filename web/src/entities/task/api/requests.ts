@@ -15,9 +15,12 @@ import {
 } from "@/entities/task";
 import { httpClient, parseOrThrow } from "@/shared/api";
 
-async function fetchTasks(workspaceId: string): Promise<TaskResponse> {
+async function fetchTasks(workspaceId: string): Promise<Task[]> {
   const raw = await httpClient.get<unknown>(`/workspaces/${workspaceId}/tasks`);
-  return parseOrThrow(tasksResponseSchema, raw);
+  const parsed = parseOrThrow(tasksResponseSchema, raw);
+  const tasks = parsed.data;
+
+  return tasks;
 }
 
 async function fetchProjectTasks(projectId: string): Promise<Task[]> {

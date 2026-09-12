@@ -1,9 +1,6 @@
+import { TaskPage } from "@/pages/tasks";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/$workspaceId/tasks")({
-  component: RouteComponent,
+  component: TaskPage,
 });
-
-function RouteComponent() {
-  return <div>Hello "/_authenticated/tasks"!</div>;
-}
