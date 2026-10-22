@@ -49,13 +49,12 @@ export function DashboardContextProvider({
   const { data: projectsResult } = useSuspenseQuery(
     projectsQueryOptions(workspace.workspace_id),
   );
-  const { data: tasksResult } = useSuspenseQuery(
+  const { data: taskList } = useSuspenseQuery(
     tasksQueryOptions(workspace.workspace_id),
   );
 
   const { id: userId = "", name: userName = "" } = sessionData?.user ?? {};
   const projectList = projectsResult.data;
-  const taskList = tasksResult.data;
 
   const user: User = {
     id: userId,

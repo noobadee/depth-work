@@ -1,9 +1,6 @@
+import { FocusPage } from "@/pages/focus";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/$workspaceId/focus")({
-  component: RouteComponent,
+  component: FocusPage,
 });
-
-function RouteComponent() {
-  return <div>Hello "/_authenticated/focus"!</div>;
-}
